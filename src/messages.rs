@@ -9,6 +9,6 @@ pub struct InitReqMsg {
 
 pub struct InitRespMsg {
     ruleset_infos: Vec<RuleSetInfo>,
-    database_change: DbUpdateSpec.
+    database_change: DbUpdateSpec,
     other: Any,
 }
