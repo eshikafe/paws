@@ -34,8 +34,8 @@ impl fmt::Display for Error {
             -105 => "[DATABASE_CHANGE] Database has changed its URI",
             -201 => "[MISSING]  Required parameter is missing",
             -202 => "[INVALID_VALUE] A parameter value is invalid in some way",
-            -301 => "[UNAUTHORIZED] The device is not authorized to use the Database."
-            -302 => "NOT_REGISTERED Device registration required, but the device is not registered"
+            -301 => "[UNAUTHORIZED] The device is not authorized to use the Database.",
+            -302 => "NOT_REGISTERED Device registration required, but the device is not registered",
             _ => "[Unknown]"
 
         }
