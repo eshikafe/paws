@@ -77,7 +77,7 @@ type DeviceDescriptor struct {
 //     operator: vCard, // Optional
 // }
 
-type RuleSetInfo struct {
+type RulesetInfo struct {
 	Authority         string `json:"authority"`
 	RulesetId         string `json:"rulesetId"`
 	MaxLocationChange float  `json:"maxLocationChange"`
@@ -86,7 +86,7 @@ type RuleSetInfo struct {
 }
 
 type DbUpdateSpec struct {
-	Databases []DatabaseSpec `json:"databases"`
+	Databases []DatabaseSpec `json:"databases,omitempty"`
 }
 
 type DatabaseSpec struct {

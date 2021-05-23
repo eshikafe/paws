@@ -54,8 +54,8 @@ type ErrorResponse struct {
 type InitReqMsg struct {
 	Type       string           `json:"type"`
 	Version    string           `json:"version"`
-	DeviceDesc DeviceDescriptor `json:"deviceDesc"` // REQUIRED
-	Location   GeoLocation      `json:"location"`   // REQUIRED
+	DeviceDesc DeviceDescriptor `json:"deviceDesc"`         // REQUIRED
+	Location   GeoLocation      `json:"location,omitempty"` // REQUIRED
 	//Other Any  // OPTIONAL
 }
 
@@ -63,7 +63,7 @@ type InitReqMsg struct {
 type InitRespMsg struct {
 	Type           string        `json:"type"`
 	Version        string        `json:"version"`
-	RulesetInfos   []RuleSetInfo `json:"rulesetInfos"`             // REQUIRED
+	RulesetInfos   []RulesetInfo `json:"rulesetInfos"`             // REQUIRED
 	DatabaseChange DbUpdateSpec  `json:"databaseChange,omitempty"` // OPTIONAL
 	//other: Any,
 }
@@ -72,13 +72,26 @@ func (msg *Request) InitMsg() Request {
 	msg.Jsonrpc = "2.0"
 	msg.Method = "spectrum.paws.init"
 	msg.Params.Type = "INIT_REQ"
-	msg.Params.Version = "1.0"
+	msg.Params.Version = PAWSVersion
 	msg.Params.DeviceDesc.SerialNumber = "XXX"
 	msg.Params.DeviceDesc.ManufacturerId = "YYY"
 	msg.Params.DeviceDesc.ModelId = "ZZ"
 	msg.Params.DeviceDesc.RulesetIds = []string{"NccTvBandWhiteSpace-2010"}
 	msg.Params.Location.Point.Center.Latitude = 6.5000
 	msg.Params.Location.Point.Center.Longitude = 3.3500
+	msg.Id = "xxxxxx"
+	return *msg
+}
+
+func (msg *Response) InitMsg() Response {
+	msg.Jsonrpc = JSONVersion
+	msg.Result.Type = "INIT_RES"
+	msg.Result.Version = PAWSVersion
+	msg.Result.RulesetInfos = []RulesetInfo{{
+		Authority:         "ng",
+		RulesetId:         "NccTvBandWhiteSpace-2010",
+		MaxLocationChange: 100,
+		MaxPollingSecs:    86400}}
 	msg.Id = "xxxxxx"
 	return *msg
 }
