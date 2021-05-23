@@ -6,8 +6,8 @@ package paws
 type float float64
 
 type Point struct {
-	Latitude  float `json:"latitude"`
-	Longitude float `json:"longitude"`
+	Latitude  float `json:"latitude"`  //REQUIRED
+	Longitude float `json:"longitude"` // REQUIRED
 }
 
 type Ellipse struct {
@@ -18,7 +18,7 @@ type Ellipse struct {
 }
 
 type Polygon struct {
-	Exterior []Point `json:"exterior,omitempty"`
+	Exterior []Point `json:"exterior,omitempty"` // REQUIRED
 }
 
 // Note: Point and region are mutually exclusive.  Exactly one must be present.
@@ -29,10 +29,10 @@ type GeoLocation struct {
 }
 
 type DeviceDescriptor struct {
-	SerialNumber   string   `json:"serialNumber"`
-	ManufacturerId string   `json:"manufacturerId"`
-	ModelId        string   `json:"modelId"`
-	RulesetIds     []string `json:"rulesetIds"`
+	SerialNumber   string   `json:"serialNumber,omitempty"`   // Optional
+	ManufacturerId string   `json:"manufacturerId,omitempty"` // Optional
+	ModelId        string   `json:"modelId,omitempty"`        // Optional
+	RulesetIds     []string `json:"rulesetIds,omitempty"`     // Optional
 	// Other Any
 }
 
