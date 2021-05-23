@@ -23,9 +23,9 @@ type Polygon struct {
 
 // Note: Point and region are mutually exclusive.  Exactly one must be present.
 type GeoLocation struct {
-	Point      Ellipse `json:"point"`
-	Region     Polygon `json:"region,omitempty"`
-	Confidence int     `json:"confidence,omitempty"` // OPTIONAL
+	Point      Ellipse  `json:"point"`
+	Region     *Polygon `json:"region,omitempty"`     // FIX THIS
+	Confidence int      `json:"confidence,omitempty"` // OPTIONAL
 }
 
 type DeviceDescriptor struct {
