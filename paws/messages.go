@@ -64,7 +64,7 @@ type InitRespMsg struct {
 	Type           string        `json:"type"`
 	Version        string        `json:"version"`
 	RulesetInfos   []RulesetInfo `json:"rulesetInfos"`             // REQUIRED
-	DatabaseChange DbUpdateSpec  `json:"databaseChange,omitempty"` // OPTIONAL
+	DatabaseChange *DbUpdateSpec `json:"databaseChange,omitempty"` // OPTIONAL FIX THIS
 	//other: Any,
 }
 
@@ -77,8 +77,8 @@ func (msg *Request) InitMsg() Request {
 	msg.Params.DeviceDesc.ManufacturerId = "YYY"
 	msg.Params.DeviceDesc.ModelId = "ZZ"
 	msg.Params.DeviceDesc.RulesetIds = []string{"NccTvBandWhiteSpace-2010"}
-	msg.Params.Location.Point.Center.Latitude = 6.5000
-	msg.Params.Location.Point.Center.Longitude = 3.3500
+	msg.Params.Location.Point.Center.Latitude = 6.5
+	msg.Params.Location.Point.Center.Longitude = 3.35
 	msg.Id = "xxxxxx"
 	return *msg
 }
