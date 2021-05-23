@@ -1,3 +1,4 @@
+// copyright 2021 Austin Aigbe
 package paws
 
 const JSONVersion string = "2.0"
