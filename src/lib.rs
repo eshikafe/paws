@@ -4,3 +4,4 @@
 pub mod parameters;
 pub mod messages;
 pub mod procedures;
+pub mod errors;

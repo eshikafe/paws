@@ -13,5 +13,9 @@ tokio = { version = "1", features = ["full"] }
 # dependency: OpenSSL
 # sudo apt-get install pkg-config libssl-dev
 reqwest = { version = "0.11.3", features = ["json"] }
-
 warp = "0.3.1"
+
+[features]
+full = ["client","server"]
+client = []
+server = []
