@@ -1,25 +1,5 @@
 package paws
 
-// {
-//     "jsonrpc": "2.0",
-//     "method": "spectrum.paws.init",
-//     "params": {
-//      "type": "INIT_REQ",
-//      "version": "1.0",
-//      "deviceDesc": {
-//       "serialNumber": "XXX",
-//       "fccId": "YYY",
-//       "rulesetIds": ["FccTvBandWhiteSpace-2010"]
-//      },
-//      "location": {
-//       "point": {
-//        "center": {"latitude": 37.0, "longitude": -101.3}
-//       }
-//      }
-//     },
-//     "id": "xxxxxx"
-//    }
-
 // PAWS Request
 // The JSON-RPC Request for PAWS has the following form:
 //    {
@@ -29,11 +9,11 @@ package paws
 //      "id": "idString"
 //    }
 
-type PAWSRequest struct {
-	Jsonrpc string  `json:"jsonrpc"`
-	Method  string  `json:"method"`
-	Params  InitReq `json:"params"`
-	Id      string  `json:"id"`
+type Request struct {
+	Jsonrpc string     `json:"jsonrpc"`
+	Method  string     `json:"method"`
+	Params  InitReqMsg `json:"params"`
+	Id      string     `json:"id"`
 }
 
 // PAWS Response
@@ -43,10 +23,10 @@ type PAWSRequest struct {
 //   "result": <PAWS_RESP>,
 //   "id": "idString"
 // }
-type PAWSResponse struct {
-	Jsonrpc string   `json:"jsonrpc"`
-	Result  InitResp `json:"result"`
-	Id      string   `json:"id"`
+type Response struct {
+	Jsonrpc string      `json:"jsonrpc"`
+	Result  InitRespMsg `json:"result"`
+	Id      string      `json:"id"`
 }
 
 // PAWS Error Response
@@ -60,7 +40,7 @@ type PAWSResponse struct {
 //   },
 //   "id": "idString"
 // }
-type PAWSErrorResponse struct {
+type ErrorResponse struct {
 	Jsonrpc string `json:"jsonrpc"`
 	Error   Error  `json:"error"`
 	Id      string `json:"id"`
@@ -71,8 +51,7 @@ type PAWSErrorResponse struct {
 //    Response: INIT_RESP
 
 // INIT_REQ message
-// Note: Point and region are mutually exclusive.  Exactly one must be present.
-type InitReq struct {
+type InitReqMsg struct {
 	Type       string           `json:"type"`
 	Version    string           `json:"version"`
 	DeviceDesc DeviceDescriptor `json:"deviceDesc"` // REQUIRED
@@ -81,7 +60,7 @@ type InitReq struct {
 }
 
 // INIT_RES message
-type InitResp struct {
+type InitRespMsg struct {
 	Type           string        `json:"type"`
 	Version        string        `json:"version"`
 	RulesetInfos   []RuleSetInfo `json:"rulesetInfos"`   // REQUIRED
@@ -89,16 +68,17 @@ type InitResp struct {
 	//other: Any,
 }
 
-func (msg *PAWSRequest) InitMsg() PAWSRequest {
+func (msg *Request) InitMsg() Request {
 	msg.Jsonrpc = "2.0"
 	msg.Method = "spectrum.paws.init"
 	msg.Params.Type = "INIT_REQ"
 	msg.Params.Version = "1.0"
-	msg.Params.DeviceDesc.SerialNumber = "XXXXX"
-	msg.Params.DeviceDesc.ManufacturerId = "YY"
+	msg.Params.DeviceDesc.SerialNumber = "XXX"
+	msg.Params.DeviceDesc.ManufacturerId = "YYY"
 	msg.Params.DeviceDesc.ModelId = "ZZ"
 	msg.Params.DeviceDesc.RulesetIds = []string{"NccTvBandWhiteSpace-2010"}
-	msg.Params.Location.Point.Center.Latitude = 37.0
-	msg.Params.Location.Point.Center.Longitude = -101.3
+	msg.Params.Location.Point.Center.Latitude = 6.5000
+	msg.Params.Location.Point.Center.Longitude = 3.3500
+	msg.Id = "xxxxxx"
 	return *msg
 }
