@@ -11,21 +11,21 @@ type Point struct {
 }
 
 type Ellipse struct {
-	Center        Point `json:"center"`
-	SemiMajorAxis float `json:"semiMajorAxis"`
-	SemiMinorAxis float `json:"semiMinorAxis"`
-	Orientation   float `json:"orientation"`
+	Center        Point `json:"center"`                  //REQUIRED
+	SemiMajorAxis float `json:"semiMajorAxis,omitempty"` // OPTIONAL
+	SemiMinorAxis float `json:"semiMinorAxis,omitempty"` // OPTIONAL
+	Orientation   float `json:"orientation,omitempty"`   // OPTIONAL
 }
 
 type Polygon struct {
-	Exterior []Point `json:"exterior"`
+	Exterior []Point `json:"exterior,omitempty"`
 }
 
 // Note: Point and region are mutually exclusive.  Exactly one must be present.
 type GeoLocation struct {
 	Point      Ellipse `json:"point"`
-	Region     Polygon `json:"region"`
-	Confidence int     `json:"confidence"` // OPTIONAL
+	Region     Polygon `json:"region,omitempty"`
+	Confidence int     `json:"confidence,omitempty"` // OPTIONAL
 }
 
 type DeviceDescriptor struct {

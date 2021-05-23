@@ -63,8 +63,8 @@ type InitReqMsg struct {
 type InitRespMsg struct {
 	Type           string        `json:"type"`
 	Version        string        `json:"version"`
-	RulesetInfos   []RuleSetInfo `json:"rulesetInfos"`   // REQUIRED
-	DatabaseChange DbUpdateSpec  `json:"databaseChange"` // OPTIONAL
+	RulesetInfos   []RuleSetInfo `json:"rulesetInfos"`             // REQUIRED
+	DatabaseChange DbUpdateSpec  `json:"databaseChange,omitempty"` // OPTIONAL
 	//other: Any,
 }
 
