@@ -40,31 +40,28 @@ type DeviceDescriptor struct {
 // #[derive(Serialize, Deserialize)]
 // type struct Any;
 
-// #[derive(Serialize, Deserialize)]
-// type enum HeightType {
-//     AGL,  // Above Ground Level (default)
-//     AMSL, // Above Mean Sea Level
-// }
+type HeightType enum {
+    AGL,  // Above Ground Level (default)
+    AMSL, // Above Mean Sea Level
+}
 
-// #[derive(Serialize, Deserialize)]
-// type struct AntennaCharacteristics {
-//     height float,
-//     heightType: HeightType,
-//     heightUncertainty float,
-//     characteristics: Various,
-// }
 
-// #[derive(Serialize, Deserialize)]
-// type struct FrequencyRange {
-//     startHz float,
-//     stopHz float,
-// }
+type AntennaCharacteristics struct {
+    height float
+    heightType HeightType,
+    heightUncertainty float
+    characteristics Various
+}
 
-// #[derive(Serialize, Deserialize)]
-// type struct DeviceCapabilities {
-//     frequencyRanges: Vec<FrequencyRange>,
-//     other: Any,
-// }
+type FrequencyRange struct {
+	StartHz float `json:"startHz"`
+	StopHz  float `json:"stopHz"`
+}
+
+type DeviceCapabilities struct {
+	frequencyRanges []FrequencyRange `json:"frequencyRanges"`
+	other           any
+}
 
 // #[derive(Serialize, Deserialize)]
 // type struct vCard {
@@ -95,55 +92,50 @@ type DatabaseSpec struct {
 	Uri  string `json:"uri"`  // Required, max length: 1024 octets
 }
 
-// #[derive(Serialize, Deserialize)]
-// type struct SpectrumSpec {
-//     rulesetInfo: RuleSetInfo,
-//     spectrumSchedules: Vec<SpectrumSchedule>,
-//     timeRange: EventTime,
-//     frequencyRanges: Vec<FrequencyRange>,
-//     needsSpectrumReport: bool,
-//     maxTotalBwHz float,
-//     maxContiguousBwHz float,
-// }
 
-// #[derive(Serialize, Deserialize)]
-// type struct SpectrumSchedule {
-//     eventTime: EventTime,
-//     spectra: Vec<Spectrum>,
-// }
+type SpectrumSpec struct{
+    rulesetInfo RuleSetInfo
+    spectrumSchedules []SpectrumSchedule
+    timeRange EventTime
+    frequencyRanges []FrequencyRange
+    needsSpectrumReport bool
+    maxTotalBwHz float
+    maxContiguousBwHz float
+}
 
-// #[derive(Serialize, Deserialize)]
-// type struct Spectrum {
-//     resolutionBwHz float,
-//     profiles: Vec<SpectrumProfile>,
-// }
 
-// #[derive(Serialize, Deserialize)]
-// type struct SpectrumProfile {
-//     list: Vec<SpectrumProfilePoint>,
-// }
+type SpectrumSchedule struct{
+    eventTime EventTime
+    spectra []Spectrum
+}
 
-// #[derive(Serialize, Deserialize)]
-// type struct SpectrumProfilePoint {
-//     hz float,
-//     dbm float,
-// }
+type Spectrum struct{
+    resolutionBwHz float
+    profiles []SpectrumProfile
+}
 
-// #[derive(Serialize, Deserialize)]
-// type struct EventTime {
-//     startTime: String,
-//     stopTime: String,
-// }
+type SpectrumProfile struct{
+    list []SpectrumProfilePoint
+}
 
-// #[derive(Serialize, Deserialize)]
-// type struct GeoSpectrumSpec {
-//     location: GeoLocation,
-//     spectrumSpecs: Vec<SpectrumSpec>,
-// }
+type SpectrumProfilePoint struct{
+    hz float
+    dbm float
+}
 
-// #[derive(Serialize, Deserialize)]
-// type struct DeviceValidity {
-//     deviceDesc: DeviceDescriptor,
-//     isValid: bool,
-//     reason: String,
-// }
+type EventTime struct{
+    startTime string
+    stopTime string
+}
+
+
+type GeoSpectrumSpec struct{
+    location GeoLocation
+    spectrumSpecs []SpectrumSpec
+}
+
+type struct DeviceValidity {
+    deviceDesc DeviceDescriptor
+    isValid bool
+    reason string
+}
