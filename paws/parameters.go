@@ -37,20 +37,20 @@ type DeviceDescriptor struct {
 	// Other Any
 }
 
-// #[derive(Serialize, Deserialize)]
 // type struct Any;
 
-type HeightType enum {
-    AGL,  // Above Ground Level (default)
-    AMSL, // Above Mean Sea Level
-}
+type HeightType int
 
+const (
+	AGL  HeightType = iota // Above Ground Level (default)
+	AMSL                   // Above Mean Sea Level
+)
 
 type AntennaCharacteristics struct {
-    height float
-    heightType HeightType,
-    heightUncertainty float
-    characteristics Various
+	Height            float      `json:"height"`
+	HeightType        HeightType `json:"heightType"`
+	HeightUncertainty float      `json:"heightUncertainty"`
+	//Characteristics   Various    `json:"characteristics"`
 }
 
 type FrequencyRange struct {
@@ -59,21 +59,19 @@ type FrequencyRange struct {
 }
 
 type DeviceCapabilities struct {
-	frequencyRanges []FrequencyRange `json:"frequencyRanges"`
-	other           any
+	FrequencyRanges []FrequencyRange `json:"frequencyRanges"`
+	//Other           any
 }
 
-// #[derive(Serialize, Deserialize)]
-// type struct vCard {
-//     // TODO
-// // use the vCard crate
-// }
+type vCard struct {
+	// TODO
+	// check for available vcard golang package
+}
 
-// #[derive(Serialize, Deserialize)]
-// type struct DeviceOwner {
-//     owner: vCard,    // Required
-//     operator: vCard, // Optional
-// }
+type DeviceOwner struct {
+	Owner    vCard `json:"owner"`    // Required
+	Operator vCard `json:"operator"` // Optional
+}
 
 type RulesetInfo struct {
 	Authority         string `json:"authority"`
@@ -92,50 +90,47 @@ type DatabaseSpec struct {
 	Uri  string `json:"uri"`  // Required, max length: 1024 octets
 }
 
-
-type SpectrumSpec struct{
-    rulesetInfo RuleSetInfo
-    spectrumSchedules []SpectrumSchedule
-    timeRange EventTime
-    frequencyRanges []FrequencyRange
-    needsSpectrumReport bool
-    maxTotalBwHz float
-    maxContiguousBwHz float
+type SpectrumSpec struct {
+	RulesetInfo         RulesetInfo        `json:"rulesetInfo"`
+	SpectrumSchedules   []SpectrumSchedule `json:"spectrumSchedules"`
+	TimeRange           EventTime          `json:"timeRange"`
+	FrequencyRanges     []FrequencyRange   `json:"frequencyRanges"`
+	NeedsSpectrumReport bool               `json:"needsSpectrumReport"`
+	MaxTotalBwHz        float              `json:"maxTotalBwHz"`
+	MaxContiguousBwHz   float              `json:"maxContiguousBwHz"`
 }
 
-
-type SpectrumSchedule struct{
-    eventTime EventTime
-    spectra []Spectrum
+type SpectrumSchedule struct {
+	EventTime EventTime  `json:"eventTime"`
+	Spectra   []Spectrum `json:"spectra"`
 }
 
-type Spectrum struct{
-    resolutionBwHz float
-    profiles []SpectrumProfile
+type Spectrum struct {
+	ResolutionBwHz float             `json:"resolutionBwHz"`
+	profiles       []SpectrumProfile `json:"profiles"`
 }
 
-type SpectrumProfile struct{
-    list []SpectrumProfilePoint
+type SpectrumProfile struct {
+	list []SpectrumProfilePoint `json:"list"` //Check
 }
 
-type SpectrumProfilePoint struct{
-    hz float
-    dbm float
+type SpectrumProfilePoint struct {
+	Hz  float `json:"hz"`
+	Dbm float `json:"dbm"`
 }
 
-type EventTime struct{
-    startTime string
-    stopTime string
+type EventTime struct {
+	StartTime string `json:"startTime"`
+	StopTime  string `json:"stopTime"`
 }
 
-
-type GeoSpectrumSpec struct{
-    location GeoLocation
-    spectrumSpecs []SpectrumSpec
+type GeoSpectrumSpec struct {
+	Location      GeoLocation    `json:"location"`
+	SpectrumSpecs []SpectrumSpec `json:"spectrumSpecs"`
 }
 
-type struct DeviceValidity {
-    deviceDesc DeviceDescriptor
-    isValid bool
-    reason string
+type DeviceValidity struct {
+	DeviceDesc DeviceDescriptor `json:"deviceDesc"`
+	IsValid    bool             `json:"isValid"`
+	Reason     string           `json:"reason"`
 }
