@@ -107,11 +107,11 @@ type SpectrumSchedule struct {
 
 type Spectrum struct {
 	ResolutionBwHz float             `json:"resolutionBwHz"`
-	profiles       []SpectrumProfile `json:"profiles"`
+	Profiles       []SpectrumProfile `json:"profiles"`
 }
 
 type SpectrumProfile struct {
-	list []SpectrumProfilePoint `json:"list"` //Check
+	List []SpectrumProfilePoint `json:"list"` //Check
 }
 
 type SpectrumProfilePoint struct {
