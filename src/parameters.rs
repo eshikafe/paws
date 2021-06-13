@@ -4,8 +4,6 @@ use crate::types::{Float, Int};
 
 use serde::Deserialize;
 use serde::Serialize;
-use serde_json::Result;
-
 
 #[derive(Serialize, Deserialize)]
 pub struct Point {
@@ -34,12 +32,12 @@ pub struct GeoLocation {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct DeviceDescriptor {
+pub struct DeviceDescriptor<T> {
     serialNumber: String, // Optional. Max length: 64 octets
     manufacturerId: String,
     modelId: String,
     rulesetIds: Vec<String>,
-    other: Any,
+    other: Option<T>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -52,11 +50,11 @@ pub enum HeightType {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct AntennaCharacteristics {
+pub struct AntennaCharacteristics<T> {
     height: Float,
     heightType: HeightType,
     heightUncertainty: Float,
-    characteristics: Various,
+    characteristics: Option<T>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -150,8 +148,8 @@ pub struct GeoSpectrumSpec {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct DeviceValidity {
-    deviceDesc: DeviceDescriptor,
+pub struct DeviceValidity<T> {
+    deviceDesc: DeviceDescriptor<T>,
     isValid: bool,
     reason: String,
 }

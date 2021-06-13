@@ -1,4 +1,6 @@
 // copyright 2021 Austin Aigbe
+// copyright 2021 TVWS-Project
+
 package paws
 
 // PAWS Request
@@ -35,9 +37,9 @@ type Response struct {
 // {
 //   "jsonrpc": "2.0",
 //   "error": {
-// 	"code": -102,
-// 	"message": "An appropriate error message.",
-// 	"data": { ... }
+// 		"code": -102,
+// 		"message": "An appropriate error message.",
+// 		"data": { ... }
 //   },
 //   "id": "idString"
 // }

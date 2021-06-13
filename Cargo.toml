@@ -2,7 +2,7 @@
 name = "paws"
 description = "Protocol to Access White-Space (PAWS) Databases"
 version = "0.1.0"
-authors = ["Austin Aigbe"]
+authors = ["tvws-project team"]
 edition = "2018"
 
 [dependencies]

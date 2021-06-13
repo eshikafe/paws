@@ -12,17 +12,29 @@ use crate::types::Int;
 pub struct Error {
     code: Int,        // range -32768 to 32767
     message: String,  // Length: 128 octets
-    data: ErrorData<T>,
+    data: String,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct ErrorData<T> {
-    // T: 
-    //   DbUpdateSpec [OUTSIDE_COVERAGE(-104) & DATABASE_CHANGE(-105) error]
-    //   Vec<String>  [MISSING (-201) error]
-    T,
-}
+pub enum ErrorCode {
 
+
+}
+// PAWS Error Response
+// The error JSON-RPC Response for PAWS has the following form:
+// {
+//   "jsonrpc": "2.0",
+//   "error": {
+// 		"code": -102,
+// 		"message": "An appropriate error message.",
+// 		"data": { ... }
+//   },
+//   "id": "idString"
+// }
+pub struct ErrorResponse{
+	jsonrpc: String,
+	error: Error,
+	id: String,
+}
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -38,7 +50,7 @@ impl fmt::Display for Error {
             -302 => "NOT_REGISTERED Device registration required, but the device is not registered",
             _ => "[Unknown]",
 
-        }
+        };
 
         write!(f, "{}", err_msg)
     }
