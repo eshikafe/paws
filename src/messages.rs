@@ -10,8 +10,8 @@ use crate::parameters::*;
 //    }
 
 pub struct Request<T> {
-	jsonrpc: String,
-	method:  String,
+    jsonrpc: String,
+    method:  String,
     params: T,
     id: String,
 }
