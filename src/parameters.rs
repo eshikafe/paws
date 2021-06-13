@@ -1,5 +1,6 @@
 // PAWS Protocol Parameters (RFC 7545)
 // All parameter names are case sensitive.
+
 use crate::types::{Float, Int};
 
 use serde::Deserialize;
@@ -11,6 +12,7 @@ pub struct Point {
     longitude: Float,
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct Ellipse {
     center: Point,
@@ -31,6 +33,7 @@ pub struct GeoLocation {
     confidence: Int,
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct DeviceDescriptor<T> {
     serialNumber: String, // Optional. Max length: 64 octets
@@ -49,6 +52,7 @@ pub enum HeightType {
     AMSL, // Above Mean Sea Level
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct AntennaCharacteristics<T> {
     height: Float,
@@ -57,12 +61,14 @@ pub struct AntennaCharacteristics<T> {
     characteristics: Option<T>,
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct FrequencyRange {
     startHz: Float,
     stopHz: Float,
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct DeviceCapabilities {
     frequencyRanges: Vec<FrequencyRange>,
@@ -81,6 +87,7 @@ pub struct DeviceOwner {
     operator: vCard, // Optional
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct RuleSetInfo {
     authority: String,
@@ -101,6 +108,7 @@ pub struct DatabaseSpec {
     uri: String,  // Required, max length: 1024 octets
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct SpectrumSpec {
     rulesetInfo: RuleSetInfo,
@@ -112,12 +120,14 @@ pub struct SpectrumSpec {
     maxContiguousBwHz: Float,
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct SpectrumSchedule {
     eventTime: EventTime,
     spectra: Vec<Spectrum>,
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct Spectrum {
     resolutionBwHz: Float,
@@ -135,18 +145,21 @@ pub struct SpectrumProfilePoint {
     dbm: Float,
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct EventTime {
     startTime: String,
     stopTime: String,
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct GeoSpectrumSpec {
     location: GeoLocation,
     spectrumSpecs: Vec<SpectrumSpec>,
 }
 
+#[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct DeviceValidity<T> {
     deviceDesc: DeviceDescriptor<T>,
