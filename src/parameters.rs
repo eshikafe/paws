@@ -1,3 +1,6 @@
+// Copyright 2021 Austin Aigbe
+// Copyright 2021 TVWS-Project
+
 // PAWS Protocol Parameters (RFC 7545)
 // All parameter names are case sensitive.
 
@@ -12,40 +15,92 @@ pub struct Point {
     longitude: Float,
 }
 
+impl Point {
+    pub fn new(latitude: Float, longitude: Float) -> Self {
+        Point {
+            latitude,
+            longitude,
+        }
+    }
+}
+
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct Ellipse {
-    center: Point,
-    semiMajorAxis: Float,
-    semiMinorAxis: Float,
-    orientation: Float,
+    center: Point,                // REQUIRED
+    semiMajorAxis: Option<Float>, // OPTIONAL
+    semiMinorAxis: Option<Float>, // OPTIONAL
+    orientation: Option<Float>,   // OPTIONAL
+}
+
+impl Ellipse {
+    pub fn new(latitude: Float, longitude: Float) -> Self {
+        Ellipse {
+            center: Point::new(latitude, longitude),
+            semiMajorAxis: None,
+            semiMinorAxis: None,
+            orientation: None,
+        }
+    }
+}
+#[derive(Serialize, Deserialize)]
+pub struct Polygon {
+    exterior: Vec<Point>, // REQUIRED
+}
+
+impl Polygon {
+    pub fn new(latitude: Float, longitude: Float) -> Self {
+        Polygon {
+            exterior: vec![Point::new(latitude, longitude)],
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Polygon {
-    exterior: Vec<Point>,
+pub enum Loc {
+    point(Ellipse),  // Mutually exclusive
+    region(Polygon), // Mutually exclusive
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct GeoLocation {
-    point: Ellipse,
-    region: Polygon,
-    confidence: Int,
+    loc: Loc,
+    confidence: Option<Int>, // OPTIONAL
 }
 
+impl GeoLocation {
+    fn new(latitude: Float, longitude: Float) -> Self {
+        GeoLocation {
+            loc: Loc::point(Ellipse::new(latitude, longitude)),
+            confidence: None,
+        }
+    }
+}
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct DeviceDescriptor<T> {
-    serialNumber: String, // Optional. Max length: 64 octets
-    manufacturerId: String,
-    modelId: String,
-    rulesetIds: Vec<String>,
-    other: Option<T>,
+    pub serialNumber: Option<String>, // Optional: PAWS, Required: FCC, ETSI
+    pub manufacturerId: Option<String>, // Optional: PAWS, Required: ETSI
+    pub modelId: Option<String>,      //Optional: PAWS, Required: ETSI
+    pub rulesetIds: Vec<String>,      //Optional
+    pub other: Option<T>,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct Any;
+impl<T> DeviceDescriptor<T> {
+    pub fn new(reg_domain: String) -> Self {
+        let regulatory_domains = vec!["NCC", "FCC", "ETSI","PAWS"];
 
+        if reg_domain in regulatory_domains
+
+        DeviceDescriptor {
+            serialNumber: Some(String::from("xxxx")),
+            manufacturerId: Some(String::from("tvwsng")),
+            modelId: None,
+
+
+        }
+    }
+}
 #[derive(Serialize, Deserialize)]
 pub enum HeightType {
     AGL,  // Above Ground Level (default)
@@ -70,9 +125,9 @@ pub struct FrequencyRange {
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct DeviceCapabilities {
+pub struct DeviceCapabilities<T> {
     frequencyRanges: Vec<FrequencyRange>,
-    other: Any,
+    other: Option<T>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -89,12 +144,12 @@ pub struct DeviceOwner {
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct RuleSetInfo {
+pub struct RuleSetInfo<T> {
     authority: String,
     rulesetId: String,
     maxLocationChange: Float,
     maxPollingSecs: Float,
-    other: Any,
+    other: Option<T>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -110,8 +165,8 @@ pub struct DatabaseSpec {
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct SpectrumSpec {
-    rulesetInfo: RuleSetInfo,
+pub struct SpectrumSpec<T> {
+    rulesetInfo: RuleSetInfo<T>,
     spectrumSchedules: Vec<SpectrumSchedule>,
     timeRange: EventTime,
     frequencyRanges: Vec<FrequencyRange>,
@@ -154,9 +209,9 @@ pub struct EventTime {
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct GeoSpectrumSpec {
+pub struct GeoSpectrumSpec<T> {
     location: GeoLocation,
-    spectrumSpecs: Vec<SpectrumSpec>,
+    spectrumSpecs: Vec<SpectrumSpec<T>>,
 }
 
 #[allow(non_snake_case)]

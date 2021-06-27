@@ -2,7 +2,7 @@
 // RFC 7545
 
 pub mod parameters;
-pub mod messages;
-pub mod procedures;
+pub mod methods;
 pub mod errors;
 pub mod types;
+pub mod version;
