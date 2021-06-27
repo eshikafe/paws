@@ -28,8 +28,14 @@ impl Point {
 #[derive(Serialize, Deserialize)]
 pub struct Ellipse {
     center: Point,                // REQUIRED
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     semiMajorAxis: Option<Float>, // OPTIONAL
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     semiMinorAxis: Option<Float>, // OPTIONAL
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     orientation: Option<Float>,   // OPTIONAL
 }
 
@@ -43,6 +49,7 @@ impl Ellipse {
         }
     }
 }
+
 #[derive(Serialize, Deserialize)]
 pub struct Polygon {
     exterior: Vec<Point>, // REQUIRED
@@ -58,13 +65,18 @@ impl Polygon {
 
 #[derive(Serialize, Deserialize)]
 pub enum Loc {
-    point(Ellipse),  // Mutually exclusive
-    region(Polygon), // Mutually exclusive
+    #[serde(rename = "point")]
+    Point(Ellipse),  
+
+    #[serde(rename = "region")]
+    Region(Polygon),
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct GeoLocation {
-    loc: Loc,
+    loc: Loc,  // point and region are  mutually exclusive
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     confidence: Option<Int>, // OPTIONAL
 }
 
@@ -79,10 +91,10 @@ impl GeoLocation {
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct DeviceDescriptor<T> {
-    pub serialNumber: Option<String>, // Optional: PAWS, Required: FCC, ETSI
+    pub serialNumber: Option<String>,   // Optional: PAWS, Required: FCC, ETSI
     pub manufacturerId: Option<String>, // Optional: PAWS, Required: ETSI
-    pub modelId: Option<String>,      //Optional: PAWS, Required: ETSI
-    pub rulesetIds: Vec<String>,      //Optional
+    pub modelId: Option<String>,        // Optional: PAWS, Required: ETSI
+    pub rulesetIds: Vec<String>,        // Optional
     pub other: Option<T>,
 }
 
