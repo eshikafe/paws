@@ -64,11 +64,9 @@ impl Polygon {
 }
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum Loc {
-    #[serde(rename = "point")]
-    Point(Ellipse),  
-
-    #[serde(rename = "region")]
+    Point(Ellipse),
     Region(Polygon),
 }
 
