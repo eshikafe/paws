@@ -13,8 +13,39 @@ pub struct Method {
     response: Response,
 }
 
+// PAWS Request JSON-RPC format:
+//    {
+//      "jsonrpc": "2.0",
+//      "method": "spectrum.paws.methodName",
+//      "params": <PAWS_REQ>,
+//      "id": "idString"
+//    }
+
+pub struct Request {
+    jsonrpc: String, 
+    method: String,  // "spectrum.paws.<methodName>"
+    params: String,  // PAWS Paramaters
+    id: String,
+}
+
+// PAWS Response
+// The non-error JSON-RPC Response for PAWS has the following form:
+// {
+//   "jsonrpc": "2.0",
+//   "result": <PAWS_RESP>,
+//   "id": "idString"
+// }
+
+pub struct Response {
+    jsonrpc: String,
+    result: String,
+    id: String,
+}
 
 impl Method{
+    // Method Name: spectrum.paws.init
+    //  Request: INIT_REQ
+    //  Response: INIT_RESP
     pub fn init(&mut self) -> Result<Response, ErrorResponse> {
         let req = Request::new("init");
         let res = Response::new();
@@ -26,35 +57,21 @@ impl Method{
 
     }
 
-    pub fn getSpectrum(&mut self) -> Result<Response, ErrorResponse> {
+    pub fn get_spectrum(&mut self) -> Result<Response, ErrorResponse> {
 
     }
 
-    pub fn getpectrumBatch(&mut self) -> Result<Response, ErrorResponse> {
+    pub fn get_spectrum_batch(&mut self) -> Result<Response, ErrorResponse> {
 
     }
 
-    pub fn notifySpectrumUse(&mut self) -> Result<Response, ErrorResponse> {
+    pub fn notify_Spectrum_use(&mut self) -> Result<Response, ErrorResponse> {
 
     }
 
-    pub fn verifyDevice(&mut self) -> Result<Response, ErrorResponse> {
+    pub fn verify_device(&mut self) -> Result<Response, ErrorResponse> {
         
     }
-}
-// PAWS Request JSON-RPC format:
-//    {
-//      "jsonrpc": "2.0",
-//      "method": "spectrum.paws.methodName",
-//      "params": <PAWS_REQ>,
-//      "id": "idString"
-//    }
-
-pub struct Request {
-    jsonrpc: String, // "jsonrpc": "2.0",
-    method: String,  // "method": "spectrum.paws.methodName",
-    params: String,       // "params": PAWS Request,
-    id: String,      // "id": "idString"
 }
 
 impl Request {
@@ -71,18 +88,10 @@ impl Request {
     }
 }
 
-// PAWS Response
-// The non-error JSON-RPC Response for PAWS has the following form:
-// {
-//   "jsonrpc": "2.0",
-//   "result": <PAWS_RESP>,
-//   "id": "idString"
-// }
+impl Response {
+    pub fn new() -> Self {
 
-pub struct Response {
-    jsonrpc: String,
-    result: String,        //PAW Response
-    id: String,
+    }
 }
 
 // INIT_REQ
@@ -100,18 +109,18 @@ impl<T> InitReq<T> {
     fn new() -> String{
         let req_type = "INIT_REQ";
         let version = PAWS_VERSION;
-        let ir_msg = InitReq {
+        let init_req_msg = InitReq {
             mtype: String::from("INIT_REQ"),
             version: PAWS_VERSION.to_string(),
             device_desc: DeviceDescriptor::new("FCC"),
             location: GeoLocation::new(),
             other: None
         };
-
-        let s = serde_json::to_string_pretty(&ir_msg).unwrap();
+        let s = serde_json::to_string_pretty(&init_req_msg).unwrap();
         return s;
     }
 }
+
 // INIT_RESP
 pub struct InitResp<T> {
     ruleset_infos: Vec<RuleSetInfo<T>>, // REQUIRED
