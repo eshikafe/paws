@@ -15,10 +15,6 @@ pub struct Error {
     data: String,
 }
 
-pub enum ErrorCode {
-
-
-}
 // PAWS Error Response
 // The error JSON-RPC Response for PAWS has the following form:
 // {
