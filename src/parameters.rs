@@ -82,7 +82,7 @@ pub struct GeoLocation {
 impl GeoLocation {
     fn new(latitude: Float, longitude: Float) -> Self {
         GeoLocation {
-            loc: Loc::point(Ellipse::new(latitude, longitude)),
+            loc: Loc::Point(Ellipse::new(latitude, longitude)),
             confidence: None,
         }
     }
@@ -94,21 +94,20 @@ pub struct DeviceDescriptor<T> {
     pub manufacturerId: Option<String>, // Optional: PAWS, Required: ETSI
     pub modelId: Option<String>,        // Optional: PAWS, Required: ETSI
     pub rulesetIds: Vec<String>,        // Optional
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub other: Option<T>,
 }
 
 impl<T> DeviceDescriptor<T> {
     pub fn new(reg_domain: String) -> Self {
-        let regulatory_domains = vec!["NCC", "FCC", "ETSI","PAWS"];
-
-        if reg_domain in regulatory_domains
 
         DeviceDescriptor {
             serialNumber: Some(String::from("xxxx")),
             manufacturerId: Some(String::from("tvwsng")),
             modelId: None,
-
-
+            rulesetIds: vec![String::from("ncc")],
+            other: None,
         }
     }
 }
