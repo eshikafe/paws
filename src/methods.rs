@@ -5,6 +5,7 @@ use crate::parameters::*;
 use crate::errors::*;
 use crate::version::*;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 // PAWS method
 pub struct Method {
@@ -100,9 +101,15 @@ pub struct InitReq<T> {
     #[serde(rename = "type")]
     mtype: String,
     version: String,
+
+    #[serde(rename = "deviceDesc")]
     device_desc: DeviceDescriptor<T>, // REQUIRED
     location: GeoLocation,            // REQUIRED
-    other: Option<T>                // OPTIONAL
+
+    #[serde(flatten)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    other: Option<HashMap<String, String>>,
+    id: String,                // OPTIONAL
 }
 
 impl<T> InitReq<T> {
@@ -122,8 +129,15 @@ impl<T> InitReq<T> {
 }
 
 // INIT_RESP
+#[derive(Serialize, Deserialize)]
 pub struct InitResp<T> {
-    ruleset_infos: Vec<RuleSetInfo<T>>, // REQUIRED
-    database_change: DbUpdateSpec,   // OPTIONAL
-    other: Option<T>,                // OPTIONAL
+    #[serde(rename = "rulesetInfos")]
+    ruleset_infos: Vec<RuleSetInfo<T>>, // REQUIRED for INIT_RESP
+
+    #[serde(rename = "databaseChange")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    database_change: Option<DbUpdateSpec>,   // OPTIONAL
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    other: Option<T>,  // OPTIONAL
 }
