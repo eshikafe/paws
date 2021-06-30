@@ -91,7 +91,7 @@ impl Request {
 
 impl Response {
     pub fn new() -> Self {
-
+        Self {}
     }
 }
 
