@@ -8,6 +8,8 @@ use crate::types::{Float, Int};
 
 use serde::Deserialize;
 use serde::Serialize;
+use serde::Value;
+use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
 pub struct Point {
@@ -89,15 +91,25 @@ impl GeoLocation {
 }
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct DeviceDescriptor<T> {
+pub struct DeviceDescriptor {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub serialNumber: Option<String>,   // Optional: PAWS, Required: FCC, ETSI
+    
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub manufacturerId: Option<String>, // Optional: PAWS, Required: ETSI
+    
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub modelId: Option<String>,        // Optional: PAWS, Required: ETSI
+    
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rulesetIds: Vec<String>,        // Optional
-    pub other: Option<T>,
+
+    #[serde(flatten)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub other: Option<HasMap<String, Value>>,
 }
 
-impl<T> DeviceDescriptor<T> {
+impl DeviceDescriptor {
     pub fn new(reg_domain: String) -> Self {
         let regulatory_domains = vec!["NCC", "FCC", "ETSI","PAWS"];
 
@@ -105,7 +117,7 @@ impl<T> DeviceDescriptor<T> {
 
         DeviceDescriptor {
             serialNumber: Some(String::from("xxxx")),
-            manufacturerId: Some(String::from("tvwsng")),
+            manufacturerId: Some(String::from("TVWS project")),
             modelId: None,
 
 
@@ -155,12 +167,18 @@ pub struct DeviceOwner {
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct RuleSetInfo<T> {
-    authority: String,
-    rulesetId: String,
-    maxLocationChange: Float,
-    maxPollingSecs: Float,
-    other: Option<T>,
+pub struct RulesetInfo<T> {
+    authority: String, // Required
+    rulesetId: String, // Required
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    maxLocationChange: Option<Float>, //Required for INIT_RESP, optional otherwise
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    maxPollingSecs: Option<Int>, //Required for INIT_RESP, optional otherwise
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    other: Option<T>, // Optional. Depending on the ruleset, other parameters may be required
 }
 
 #[derive(Serialize, Deserialize)]
@@ -177,7 +195,7 @@ pub struct DatabaseSpec {
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct SpectrumSpec<T> {
-    rulesetInfo: RuleSetInfo<T>,
+    rulesetInfo: RulesetInfo<T>,
     spectrumSchedules: Vec<SpectrumSchedule>,
     timeRange: EventTime,
     frequencyRanges: Vec<FrequencyRange>,
