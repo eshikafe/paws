@@ -8,7 +8,7 @@ use crate::types::{Float, Int};
 
 use serde::Deserialize;
 use serde::Serialize;
-use serde::Value;
+use serde_json::{json, Value};
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
@@ -136,6 +136,8 @@ pub struct AntennaCharacteristics<T> {
     height: Float,
     heightType: HeightType,
     heightUncertainty: Float,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     characteristics: Option<T>,
 }
 
@@ -148,9 +150,12 @@ pub struct FrequencyRange {
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct DeviceCapabilities<T> {
+pub struct DeviceCapabilities {
     frequencyRanges: Vec<FrequencyRange>,
-    other: Option<T>,
+
+    #[serde(flatten)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    other: Option<HasMap<String, Value>>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -162,7 +167,9 @@ pub struct vCard {
 #[derive(Serialize, Deserialize)]
 pub struct DeviceOwner {
     owner: vCard,    // Required
-    operator: vCard, // Optional
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    operator: Option<vCard>, // Optional
 }
 
 #[allow(non_snake_case)]
@@ -177,8 +184,9 @@ pub struct RulesetInfo<T> {
     #[serde(skip_serializing_if = "Option::is_none")]
     maxPollingSecs: Option<Int>, //Required for INIT_RESP, optional otherwise
 
+    #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    other: Option<T>, // Optional. Depending on the ruleset, other parameters may be required
+    Option<HasMap<String, Value>>, // Optional. Depending on the ruleset, other parameters may be required
 }
 
 #[derive(Serialize, Deserialize)]
@@ -194,8 +202,8 @@ pub struct DatabaseSpec {
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct SpectrumSpec<T> {
-    rulesetInfo: RulesetInfo<T>,
+pub struct SpectrumSpec {
+    rulesetInfo: RulesetInfo,
     spectrumSchedules: Vec<SpectrumSchedule>,
     timeRange: EventTime,
     frequencyRanges: Vec<FrequencyRange>,

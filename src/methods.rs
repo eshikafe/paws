@@ -5,6 +5,7 @@ use crate::parameters::*;
 use crate::errors::*;
 use crate::version::*;
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 use std::collections::HashMap;
 
 // PAWS method
@@ -91,13 +92,13 @@ impl Request {
 
 impl Response {
     pub fn new() -> Self {
-        Self {}
+
     }
 }
 
 // INIT_REQ
 #[derive(Serialize, Deserialize)]
-pub struct InitReq<T> {
+pub struct InitReq {
     #[serde(rename = "type")]
     mtype: String,
     version: String,
@@ -108,11 +109,10 @@ pub struct InitReq<T> {
 
     #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    other: Option<HashMap<String, String>>,
-    id: String,                // OPTIONAL
+    other: Option<HashMap<String, Value>>,
 }
 
-impl<T> InitReq<T> {
+impl InitReq {
     fn new() -> String{
         let req_type = "INIT_REQ";
         let version = PAWS_VERSION;
@@ -130,7 +130,7 @@ impl<T> InitReq<T> {
 
 // INIT_RESP
 #[derive(Serialize, Deserialize)]
-pub struct InitResp<T> {
+pub struct InitResp {
     #[serde(rename = "rulesetInfos")]
     ruleset_infos: Vec<RuleSetInfo<T>>, // REQUIRED for INIT_RESP
 
@@ -139,5 +139,5 @@ pub struct InitResp<T> {
     database_change: Option<DbUpdateSpec>,   // OPTIONAL
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    other: Option<T>,  // OPTIONAL
+    other: Option<HashMap<String, Value>>,  // OPTIONAL
 }
