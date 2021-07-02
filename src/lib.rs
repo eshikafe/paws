@@ -12,7 +12,7 @@ pub mod db;
 mod tests {
     use super::db;
     #[test]
-    fn get_rule_set() {
+    fn test_redis_db() {
         let r1 = db::get_rule_set("nccId");
         let r2 = db::get_rule_set("fccId");
         assert_eq!("123", r1);
