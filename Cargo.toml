@@ -14,8 +14,6 @@ tokio = { version = "1", features = ["full"] }
 # sudo apt-get install pkg-config libssl-dev
 reqwest = { version = "0.11.3", features = ["json"] }
 warp = "0.3.1"
-redis = "0.20.2"
-
 redis = { version = "0.20.2", features=["tls"]}
 
 [features]
