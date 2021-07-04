@@ -1,0 +1,7 @@
+version: "3.7"
+services:
+    spectrumdb:
+        image: redis:6.2.4-alpine
+        ports:
+            - 6379:6379
+        command: [ "redis-server" ]
