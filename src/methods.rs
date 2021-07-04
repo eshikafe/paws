@@ -15,34 +15,7 @@ pub struct Method {
     response: Response,
 }
 
-// PAWS Request JSON-RPC format:
-//    {
-//      "jsonrpc": "2.0",
-//      "method": "spectrum.paws.methodName",
-//      "params": <PAWS_REQ>,
-//      "id": "idString"
-//    }
 
-pub struct Request {
-    jsonrpc: String, 
-    method: String,  // "spectrum.paws.<methodName>"
-    params: String,  // PAWS Paramaters
-    id: String,
-}
-
-// PAWS Response
-// The non-error JSON-RPC Response for PAWS has the following form:
-// {
-//   "jsonrpc": "2.0",
-//   "result": <PAWS_RESP>,
-//   "id": "idString"
-// }
-
-pub struct Response {
-    jsonrpc: String,
-    result: String,
-    id: String,
-}
 
 impl Method{
     // Method Name: spectrum.paws.init
@@ -50,7 +23,7 @@ impl Method{
     //  Response: INIT_RESP
     pub fn init(&mut self) -> Result<Response, ErrorResponse> {
         let req = Request::new("init");
-        let res = Response::new();
+        let res = Response::new("init");
         Ok(res)
 
     }
@@ -76,10 +49,25 @@ impl Method{
     }
 }
 
+// PAWS Request JSON-RPC format:
+//    {
+//      "jsonrpc": "2.0",
+//      "method": "spectrum.paws.methodName",
+//      "params": <PAWS_REQ>,
+//      "id": "idString"
+//    }
+
+pub struct Request {
+    jsonrpc: String, 
+    method: String,  // "spectrum.paws.<methodName>"
+    params: String,  // PAWS Paramaters
+    id: String,
+}
+
 impl Request {
-    pub fn new(method_name: &str) -> Self {
-        match method_name {
-            "init" => Request {
+    pub fn new(name: &str) -> Self {
+        match name {
+            "init" => Self {
                 jsonrpc: String::from("2.0"),
                 method: String::from("spectrum.paws.init"),
                 params: InitReq::new(),                                  // INIT_REQ
@@ -90,8 +78,30 @@ impl Request {
     }
 }
 
+// PAWS Response
+// The non-error JSON-RPC Response for PAWS has the following form:
+// {
+//   "jsonrpc": "2.0",
+//   "result": <PAWS_RESP>,
+//   "id": "idString"
+// }
+
+pub struct Response {
+    jsonrpc: String,
+    result: String,
+    id: String,
+}
+
 impl Response {
-    pub fn new() -> Self {
+    pub fn new(name: &str) -> Self {
+        match name {
+            "init" => Self {
+                jsonrpc: String::from("2.0"),
+                result: 
+                id: String::from("xxxxxx"),
+
+            }
+        }
 
     }
 }
@@ -104,8 +114,8 @@ pub struct InitReq {
     version: String,
 
     #[serde(rename = "deviceDesc")]
-    device_desc: DeviceDescriptor<T>, // REQUIRED
-    location: GeoLocation,            // REQUIRED
+    device_desc: DeviceDescriptor, // REQUIRED
+    location: GeoLocation,         // REQUIRED
 
     #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -131,6 +141,10 @@ impl InitReq {
 // INIT_RESP
 #[derive(Serialize, Deserialize)]
 pub struct InitResp {
+    #[serde(rename = "type")]
+    mtype: String,
+    version: String,
+
     #[serde(rename = "rulesetInfos")]
     ruleset_infos: Vec<RuleSetInfo<T>>, // REQUIRED for INIT_RESP
 
@@ -138,6 +152,7 @@ pub struct InitResp {
     #[serde(skip_serializing_if = "Option::is_none")]
     database_change: Option<DbUpdateSpec>,   // OPTIONAL
 
+    #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
     other: Option<HashMap<String, Value>>,  // OPTIONAL
 }

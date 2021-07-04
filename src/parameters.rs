@@ -186,7 +186,7 @@ pub struct RulesetInfo<T> {
 
     #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    Option<HasMap<String, Value>>, // Optional. Depending on the ruleset, other parameters may be required
+    other: Option<HasMap<String, Value>>, // Optional. Depending on the ruleset, other parameters may be required
 }
 
 #[derive(Serialize, Deserialize)]
