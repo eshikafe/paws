@@ -9,7 +9,7 @@
 pub mod db;
 
 #[cfg(test)]
-mod tests {
+mod paws_tests {
     use super::db;
     #[test]
     fn test_redis_db() {
