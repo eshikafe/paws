@@ -1,6 +1,6 @@
 use redis::Commands;
 
-pub fn get_rule_set(rule_set: &str) -> String {
+pub fn get_ruleset(rule_set: &str) -> String {
     let mut conn = redis_connect();
     let result: String = redis::cmd("GET")
         .arg(rule_set)
