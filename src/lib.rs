@@ -6,7 +6,7 @@
 // pub mod errors;
 // pub mod types;
 // pub mod version;
-// pub mod redis_client;
+pub mod redis_client;
 
 
 #[cfg(test)]
