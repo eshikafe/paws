@@ -1,10 +1,10 @@
 use warp::Filter;
 
 #[tokio::main]
-async fn start() {
-    // GET /hello/warp => 200 OK with body "Hello, warp!"
-    let hello = warp::path!("hello" / String)
-        .map(|name| format!("Hello, {}!", name));
+pub async fn start() {
+    // GET /spectrumdb/version => 200 OK with body "TVWS project, warp!"
+    let hello = warp::path!("spectrumdb" / String)
+        .map(|name| format!("TVWS project, {}!", name));
 
     warp::serve(hello)
         .run(([127, 0, 0, 1], 3030))
