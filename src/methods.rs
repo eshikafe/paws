@@ -1,5 +1,5 @@
-// Copyright 2021 Austin Aigbe
-// Copyright 2021 TVWS-Project
+// (c) 2021 TVWS-Project
+
 
 use crate::parameters::*;
 use crate::errors::*;

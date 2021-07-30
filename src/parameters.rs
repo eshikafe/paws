@@ -1,5 +1,4 @@
-// Copyright 2021 Austin Aigbe
-// Copyright 2021 TVWS-Project
+// (c) 2021 TVWS-Project
 
 // PAWS Protocol Parameters (RFC 7545)
 // All parameter names are case sensitive.

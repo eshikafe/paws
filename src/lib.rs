@@ -1,5 +1,6 @@
+// (c) 2021 TVWS-Project
 // PAWS - Protocol to Access White Space Database
-// RFC 7545
+// Compliant with RFC 7545
 
 // pub mod parameters;
 // pub mod methods;
@@ -7,12 +8,14 @@
 // pub mod types;
 // pub mod version;
 pub mod redis_client;
+pub mod server;
 
 
 #[cfg(test)]
 mod paws_tests {
     use super::redis_client as rc;
     use mac_address::get_mac_address;
+    
     #[test]
     #[ignore]
     fn test_redis_db() {
@@ -26,6 +29,7 @@ mod paws_tests {
     }
     
     #[test]
+    #[ignore]
     fn get_mac_addr() {
         match get_mac_address() {
         Ok(Some(ma)) => {
@@ -34,8 +38,12 @@ mod paws_tests {
         }
         Ok(None) => println!("No MAC address found."),
         Err(e) => println!("{:?}", e),
+        }
     }
 
-
+    use super::server;
+    #[test]
+    fn test_server() {
+        server::start();
     }
 }
