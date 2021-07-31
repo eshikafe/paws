@@ -5,10 +5,12 @@
 
 use crate::types::{Float, Int};
 
+use mac_address::get_mac_address;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::{json, Value};
 use std::collections::HashMap;
+use std::fmt::Write;
 
 #[derive(Serialize, Deserialize)]
 pub struct Point {
@@ -28,7 +30,7 @@ impl Point {
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct Ellipse {
-    center: Point,                // REQUIRED
+    center: Point, // REQUIRED
 
     #[serde(skip_serializing_if = "Option::is_none")]
     semiMajorAxis: Option<Float>, // OPTIONAL
@@ -37,12 +39,12 @@ pub struct Ellipse {
     semiMinorAxis: Option<Float>, // OPTIONAL
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    orientation: Option<Float>,   // OPTIONAL
+    orientation: Option<Float>, // OPTIONAL
 }
 
 impl Ellipse {
     pub fn new(latitude: Float, longitude: Float) -> Self {
-        Ellipse {
+        Self {
             center: Point::new(latitude, longitude),
             semiMajorAxis: None,
             semiMinorAxis: None,
@@ -74,7 +76,7 @@ pub enum Loc {
 #[derive(Serialize, Deserialize)]
 pub struct GeoLocation {
     #[serde(flatten)]
-    loc: Loc,  // point and region are  mutually exclusive
+    loc: Loc, // point and region are  mutually exclusive
 
     #[serde(skip_serializing_if = "Option::is_none")]
     confidence: Option<Int>, // OPTIONAL
@@ -83,43 +85,66 @@ pub struct GeoLocation {
 impl GeoLocation {
     fn new(latitude: Float, longitude: Float) -> Self {
         GeoLocation {
-            loc: Loc::point(Ellipse::new(latitude, longitude)),
+            loc: Loc::Point(Ellipse::new(latitude, longitude)),
             confidence: None,
         }
     }
 }
+
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct DeviceDescriptor {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub serialNumber: Option<String>,   // Optional: PAWS, Required: FCC, ETSI
-    
+    pub serialNumber: Option<String>, // Optional: PAWS, Required: FCC, ETSI
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub manufacturerId: Option<String>, // Optional: PAWS, Required: ETSI
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub modelId: Option<String>,        // Optional: PAWS, Required: ETSI
-    
+    pub modelId: Option<String>, // Optional: PAWS, Required: ETSI
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub rulesetIds: Vec<String>,        // Optional
+    pub rulesetIds: Option<Vec<String>>, // Optional
 
     #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub other: Option<HasMap<String, Value>>,
+    pub other: Option<HashMap<String, Value>>,
 }
 
 impl DeviceDescriptor {
-    pub fn new(reg_domain: String) -> Self {
-        let regulatory_domains = vec!["NCC", "FCC", "ETSI","PAWS"];
+    pub fn new(regulator: &str) -> Self {
+        //let regulatory_domains = vec!["NCC", "FCC", "ETSI", "PAWS"];
+        let mut other_params = HashMap::new();
+        let mut rule_set_id = String::new();
 
-        if reg_domain in regulatory_domains
+        match regulator {
+            "NCC" => {
+                other_params.insert(String::from("NccId"), json!("YYY"));
+                rule_set_id = String::from("NccTvBandWhiteSpace-2019");
+            }
+            "FCC" => {
+                other_params.insert(String::from("FccId"), json!("YYY"));
+                other_params.insert(String::from("fccTvbdDeviceType"), json!("FIXED"));
+                rule_set_id = String::from("FccTvBandWhiteSpace-2010");
+            }
+            _ => {
+                other_params.insert(String::from("etsiEnDeviceType"), json!("A"));
+                other_params.insert(String::from("etsiEnDeviceEmissionsClass"), json!("1"));
+                other_params.insert(
+                    String::from("etsiEnTechnologyId"),
+                    json!("ETSI-EN-301-598-2.1.1-2018-01"),
+                );
+                other_params.insert(String::from("etsiEnDeviceCategory"), json!("master"));
+                rule_set_id = String::from("ETSI-EN-301-598-2.1.1");
+            }
+        };
 
-        DeviceDescriptor {
-            serialNumber: Some(String::from("xxxx")),
-            manufacturerId: Some(String::from("TVWS project")),
+        Self {
+            serialNumber: Some(get_mac_addr()),
+            manufacturerId: Some(String::from("TVWS-Project")),
             modelId: None,
-
-
+            rulesetIds: Some(vec![rule_set_id]),
+            other: Some(other_params),
         }
     }
 }
@@ -154,7 +179,7 @@ pub struct DeviceCapabilities {
 
     #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    other: Option<HasMap<String, Value>>,
+    other: Option<HashMap<String, Value>>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -165,7 +190,7 @@ pub struct vCard {
 
 #[derive(Serialize, Deserialize)]
 pub struct DeviceOwner {
-    owner: vCard,    // Required
+    owner: vCard, // Required
 
     #[serde(skip_serializing_if = "Option::is_none")]
     operator: Option<vCard>, // Optional
@@ -173,7 +198,7 @@ pub struct DeviceOwner {
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct RulesetInfo<T> {
+pub struct RulesetInfo {
     authority: String, // Required
     rulesetId: String, // Required
 
@@ -185,7 +210,7 @@ pub struct RulesetInfo<T> {
 
     #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    other: Option<HasMap<String, Value>>, // Optional. Depending on the ruleset, other parameters may be required
+    other: Option<HashMap<String, Value>>, // Optional. Depending on the ruleset, other parameters may be required
 }
 
 #[derive(Serialize, Deserialize)]
@@ -245,15 +270,35 @@ pub struct EventTime {
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct GeoSpectrumSpec<T> {
+pub struct GeoSpectrumSpec {
     location: GeoLocation,
-    spectrumSpecs: Vec<SpectrumSpec<T>>,
+    spectrumSpecs: Vec<SpectrumSpec>,
 }
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
-pub struct DeviceValidity<T> {
-    deviceDesc: DeviceDescriptor<T>,
+pub struct DeviceValidity {
+    deviceDesc: DeviceDescriptor,
     isValid: bool,
     reason: String,
+}
+
+// Common functions
+
+pub fn get_mac_addr() -> String {
+    let mut mac_addr = String::new();
+    match get_mac_address() {
+        Ok(Some(ma)) => {
+            let b = ma.bytes();
+            let _result = match write!(
+                mac_addr,
+                "{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}",
+                b[0], b[1], b[2], b[3], b[4], b[5]
+            ) {
+                Ok(_) => return mac_addr,
+                _ => return String::from(""),
+            };
+        }
+        _ => String::from(""),
+    }
 }
