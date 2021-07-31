@@ -129,8 +129,8 @@ impl InitReq {
         let init_req_msg = InitReq {
             mtype: String::from("INIT_REQ"),
             version: PAWS_VERSION.to_string(),
-            device_desc: DeviceDescriptor::new("FCC"),
-            location: GeoLocation::new(),
+            device_desc: DeviceDescriptor::new("NCC"),
+            location: GeoLocation::new(37.0, -101.3),
             other: None
         };
         let s = serde_json::to_string_pretty(&init_req_msg).unwrap();
