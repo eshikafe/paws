@@ -16,12 +16,13 @@ pub struct Method {
 }
 
 
-
+// api/spectrumdb/v1/init
 impl Method{
-    // Method Name: spectrum.paws.init
-    //  Request: INIT_REQ
-    //  Response: INIT_RESP
+    
     pub fn init(&mut self) -> Result<Response, ErrorResponse> {
+        // Method Name: spectrum.paws.init
+        //  Request: INIT_REQ
+        //  Response: INIT_RESP
         let req = Request::new("init");
         let res = Response::new("init");
         Ok(res)
@@ -130,7 +131,7 @@ impl InitReq {
             mtype: String::from("INIT_REQ"),
             version: PAWS_VERSION.to_string(),
             device_desc: DeviceDescriptor::new("NCC"),
-            location: GeoLocation::new(37.0, -101.3),
+            location: GeoLocation::new(6.8269, 3.6228),
             other: None
         };
         let s = serde_json::to_string_pretty(&init_req_msg).unwrap();
@@ -146,7 +147,7 @@ pub struct InitResp {
     version: String,
 
     #[serde(rename = "rulesetInfos")]
-    ruleset_infos: Vec<RuleSetInfo<T>>, // REQUIRED for INIT_RESP
+    ruleset_infos: Vec<RuleSetInfo>, // REQUIRED for INIT_RESP
 
     #[serde(rename = "databaseChange")]
     #[serde(skip_serializing_if = "Option::is_none")]
