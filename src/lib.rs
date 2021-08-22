@@ -36,7 +36,6 @@ mod paws_tests {
 
     use super::server;
     #[test]
-    #[ignore]
     fn test_server() {
         server::start();
     }
