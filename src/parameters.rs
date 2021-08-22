@@ -83,7 +83,7 @@ pub struct GeoLocation {
 }
 
 impl GeoLocation {
-    fn new(latitude: Float, longitude: Float) -> Self {
+    pub fn new(latitude: Float, longitude: Float) -> Self {
         GeoLocation {
             loc: Loc::Point(Ellipse::new(latitude, longitude)),
             confidence: None,

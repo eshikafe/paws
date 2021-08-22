@@ -6,7 +6,7 @@ pub mod types;
 pub mod parameters;
 // pub mod methods;
 // pub mod errors;
-// pub mod version;
+pub mod version;
 pub mod redis_client;
 pub mod server;
 

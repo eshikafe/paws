@@ -98,7 +98,7 @@ impl Response {
         match name {
             "init" => Self {
                 jsonrpc: String::from("2.0"),
-                result: 
+                result: String::from("INIT_RESP"),
                 id: String::from("xxxxxx"),
 
             }
@@ -147,7 +147,7 @@ pub struct InitResp {
     version: String,
 
     #[serde(rename = "rulesetInfos")]
-    ruleset_infos: Vec<RuleSetInfo>, // REQUIRED for INIT_RESP
+    ruleset_infos: Vec<RulesetInfo>, // REQUIRED for INIT_RESP
 
     #[serde(rename = "databaseChange")]
     #[serde(skip_serializing_if = "Option::is_none")]
