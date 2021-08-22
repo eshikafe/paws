@@ -141,8 +141,8 @@ impl DeviceDescriptor {
 
         Self {
             serialNumber: Some(get_mac_addr()),
-            manufacturerId: Some(String::from("TVWS-Project")),
-            modelId: None,
+            manufacturerId: Some(String::from("tvws-project-team")),
+            modelId: Some(String::from("model-sw-beta")),
             rulesetIds: Some(vec![rule_set_id]),
             other: Some(other_params),
         }
