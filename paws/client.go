@@ -1,2 +1,2 @@
-// copyright 2021 Austin Aigbe
+// copyright 2021 TVWS Project
 package paws
