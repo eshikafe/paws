@@ -1,4 +1,4 @@
-// copyright 2021 Austin Aigbe
+// copyright 2021 TVWS Project
 package main
 
 import (
@@ -8,17 +8,19 @@ import (
 )
 
 func main() {
-	fmt.Println("PAWS protocol")
+	fmt.Println("PAWS protocol, version " + paws.PAWSVersion)
 
 	// INIT_MSG
 	request := paws.Request{}
 	msg := request.InitMsg()
-	req, _ := json.Marshal(msg)
+	req, _ := json.MarshalIndent(msg, "", "    ")
+	fmt.Println("PAWS Request:")
 	fmt.Println(string(req))
 
 	// INT_RES
 	response := paws.Response{}
 	msg2 := response.InitMsg()
-	res, _ := json.Marshal(msg2)
+	res, _ := json.MarshalIndent(msg2, "", "    ")
+	fmt.Println("PAWS Response:")
 	fmt.Println(string(res))
 }
