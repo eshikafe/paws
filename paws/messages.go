@@ -88,7 +88,7 @@ func (msg *Request) InitMsg() Request {
 
 func (msg *Response) InitMsg() Response {
 	msg.Jsonrpc = JSONVersion
-	msg.Result.Type = "INIT_RES"
+	msg.Result.Type = "INIT_RESP"
 	msg.Result.Version = PAWSVersion
 	msg.Result.RulesetInfos = []RulesetInfo{{
 		Authority:         "ng",
