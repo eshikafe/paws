@@ -2,55 +2,57 @@
 
 
 use crate::parameters::*;
-use crate::errors::*;
+//use crate::errors::*;
 use crate::version::*;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::collections::HashMap;
 
 // PAWS method
-pub struct Method {
-    name: String,
-    request: Request,
-    response: Response,
-}
+// pub struct Method<T, U> {
+//    pub name: String,
+//    pub request: Request<T>,
+//    pub response: Response<U>,
+// }
 
 
-// api/spectrumdb/v1/init
-impl Method{
+// impl<T, U> Method<T, U>{
     
-    pub fn init(&mut self) -> Result<Response, ErrorResponse> {
-        // Method Name: spectrum.paws.init
-        //  Request: INIT_REQ
-        //  Response: INIT_RESP
-        let req = Request::new("init");
-        let res = Response::new("init");
-        Ok(res)
-
-    }
-
-    pub fn register(&mut self) -> Result<Response, ErrorResponse> {
-
-    }
-
-    pub fn get_spectrum(&mut self) -> Result<Response, ErrorResponse> {
-
-    }
-
-    pub fn get_spectrum_batch(&mut self) -> Result<Response, ErrorResponse> {
-
-    }
-
-    pub fn notify_Spectrum_use(&mut self) -> Result<Response, ErrorResponse> {
-
-    }
-
-    pub fn verify_device(&mut self) -> Result<Response, ErrorResponse> {
+//     pub fn init(&mut self) -> Self {
+//         // Method Name: spectrum.paws.init
+//         //  Request: INIT_REQ
+//         //  Response: INIT_RESP
+//         Self {
+//             name: String::from("init"),
+//             request: Request<InitReq>,
+//             response: Response<InitResp>,
+//         }
         
-    }
-}
 
-// PAWS Request JSON-RPC format:
+//     }
+
+    // pub fn register(&mut self) -> Result<Response, ErrorResponse> {
+
+    // }
+
+    // pub fn get_spectrum(&mut self) -> Result<Response, ErrorResponse> {
+
+    // }
+
+    // pub fn get_spectrum_batch(&mut self) -> Result<Response, ErrorResponse> {
+
+    // }
+
+    // pub fn notify_Spectrum_use(&mut self) -> Result<Response, ErrorResponse> {
+
+    // }
+
+    // pub fn verify_device(&mut self) -> Result<Response, ErrorResponse> {
+        
+    // }
+// }
+
+// PAWS Request
 //    {
 //      "jsonrpc": "2.0",
 //      "method": "spectrum.paws.methodName",
@@ -58,20 +60,22 @@ impl Method{
 //      "id": "idString"
 //    }
 
-pub struct Request {
-    jsonrpc: String, 
-    method: String,  // "spectrum.paws.<methodName>"
-    params: String,  // PAWS Paramaters
-    id: String,
+#[derive(Serialize, Deserialize)]
+pub struct Request<T> {
+    pub jsonrpc: String, 
+    pub method: String,
+    pub params: T,
+    pub id: String,
 }
 
-impl Request {
+
+impl<T> Request<T> {
     pub fn new(name: &str) -> Self {
         match name {
             "init" => Self {
                 jsonrpc: String::from("2.0"),
                 method: String::from("spectrum.paws.init"),
-                params: InitReq::new(),                                  // INIT_REQ
+                params: T::new(),
                 id: String::from("xxxxxx")
             }
         }
@@ -80,30 +84,28 @@ impl Request {
 }
 
 // PAWS Response
-// The non-error JSON-RPC Response for PAWS has the following form:
 // {
 //   "jsonrpc": "2.0",
 //   "result": <PAWS_RESP>,
 //   "id": "idString"
 // }
 
-pub struct Response {
-    jsonrpc: String,
-    result: String,
-    id: String,
+#[derive(Serialize, Deserialize)]
+pub struct Response<T> {
+    pub jsonrpc: String,
+    pub result: T,
+    pub id: String,
 }
 
-impl Response {
+impl<T> Response<T> {
     pub fn new(name: &str) -> Self {
         match name {
             "init" => Self {
-                jsonrpc: String::from("2.0"),
-                result: String::from("INIT_RESP"),
-                id: String::from("xxxxxx"),
-
-            }
+                    jsonrpc: String::from("2.0"),
+                    result: T::new(),
+                    id: String::from("xxxxxx"),
+                }
         }
-
     }
 }
 
@@ -111,31 +113,29 @@ impl Response {
 #[derive(Serialize, Deserialize)]
 pub struct InitReq {
     #[serde(rename = "type")]
-    mtype: String,
-    version: String,
+    pub mtype: String,
+    pub version: String,
 
     #[serde(rename = "deviceDesc")]
-    device_desc: DeviceDescriptor, // REQUIRED
-    location: GeoLocation,         // REQUIRED
+    pub device_desc: DeviceDescriptor, // REQUIRED
+    pub location: GeoLocation,         // REQUIRED
 
     #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    other: Option<HashMap<String, Value>>,
+    pub other: Option<HashMap<String, Value>>,
 }
 
 impl InitReq {
-    fn new() -> String{
-        let req_type = "INIT_REQ";
-        let version = PAWS_VERSION;
-        let init_req_msg = InitReq {
+    pub fn new() -> Self{
+        Self {
             mtype: String::from("INIT_REQ"),
             version: PAWS_VERSION.to_string(),
             device_desc: DeviceDescriptor::new("NCC"),
             location: GeoLocation::new(6.8269, 3.6228),
             other: None
         };
-        let s = serde_json::to_string_pretty(&init_req_msg).unwrap();
-        return s;
+        // let s = serde_json::to_string_pretty(&init_req_msg).unwrap();
+        // return s;
     }
 }
 
@@ -143,17 +143,31 @@ impl InitReq {
 #[derive(Serialize, Deserialize)]
 pub struct InitResp {
     #[serde(rename = "type")]
-    mtype: String,
-    version: String,
+   pub mtype: String,
+   pub version: String,
 
     #[serde(rename = "rulesetInfos")]
-    ruleset_infos: Vec<RulesetInfo>, // REQUIRED for INIT_RESP
+   pub ruleset_infos: Vec<RulesetInfo>, // REQUIRED for INIT_RESP
 
     #[serde(rename = "databaseChange")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    database_change: Option<DbUpdateSpec>,   // OPTIONAL
+   pub database_change: Option<DbUpdateSpec>,   // OPTIONAL
 
     #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    other: Option<HashMap<String, Value>>,  // OPTIONAL
+   pub other: Option<HashMap<String, Value>>,  // OPTIONAL
+}
+
+impl InitResp {
+    pub fn new() -> Self {
+        Self {
+            mtype: String::from("INIT_REQ"),
+            version: PAWS_VERSION.to_string(),
+
+            // TODO: Use rule_set_id in DeviceDescriptor to determine RulesetInfo
+            ruleset_infos: vec![RulesetInfo::new()],
+            database_change: None,
+            other: None,
+        }
+    }
 }

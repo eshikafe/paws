@@ -1,14 +1,13 @@
 use warp::Filter;
 use serde_json::{json, Value};
 use std::collections::HashMap;
-use crate::version::PAWS_VERSION;
-//use methods;
+use crate::version::*;
+use crate::methods::*;
 
 #[tokio::main]
 pub async fn start() {
     
-    // let hello = warp::path!("/api/spectrumdb/v1/" / String)
-    //     .map(|version| format!("TVWS Spectrum Database API version, {}!", version));
+    // PAWS APIs
 
     // GET /api/spectrumdb/v1beta/version
     // curl -GET localhost:3030/api/spectrumdb/v1beta/version
@@ -29,6 +28,7 @@ pub async fn start() {
         .and(warp::path("v1beta"))
         .and(warp::path("init"))
         .and(warp::path::end())
+        .and(json_body())
         .and_then(paws_init);
 
     // POST /api/spectrumdb/v1beta/register
@@ -54,14 +54,22 @@ async fn get_paws_version() -> Result<impl warp::Reply, warp::Rejection> {
     Ok(warp::reply::json(&result))
 }
 
-async fn paws_init() -> Result<impl warp::Reply, warp::Rejection> {
-    let mut result = HashMap::new();
-    result.insert(String::from("Method"), json!("spectrum.paws.init"));
-    Ok(warp::reply::json(&result))
+async fn paws_init(req: Request<InitReq>) -> Result<impl warp::Reply, warp::Rejection> {
+    if req.method == String::from("spectrum.paws.init") {
+        let res = Response::<InitResp>::new("init");
+        Ok(warp::reply::json(&res))
+    }else {
+        Ok(warp::reply::json("Error"))
+    }
+    
 }
 
 async fn paws_register() -> Result<impl warp::Reply, warp::Rejection> {
     let mut result = HashMap::new();
     result.insert(String::from("Method"), json!("spectrum.paws.register"));
     Ok(warp::reply::json(&result))
+}
+
+fn json_body() -> impl Filter<Extract = (Request<InitReq>,), Error = warp::Rejection> {
+    warp::body::json()
 }

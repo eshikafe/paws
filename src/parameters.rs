@@ -199,18 +199,29 @@ pub struct DeviceOwner {
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct RulesetInfo {
-    authority: String, // Required
-    rulesetId: String, // Required
+    pub authority: String, // Required
+    pub rulesetId: String, // Required
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    maxLocationChange: Option<Float>, //Required for INIT_RESP, optional otherwise
+    pub maxLocationChange: Option<Float>, //Required for INIT_RESP, optional otherwise
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    maxPollingSecs: Option<Int>, //Required for INIT_RESP, optional otherwise
+    pub maxPollingSecs: Option<Int>, //Required for INIT_RESP, optional otherwise
 
     #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    other: Option<HashMap<String, Value>>, // Optional. Depending on the ruleset, other parameters may be required
+    pub other: Option<HashMap<String, Value>>, // Optional. Depending on the ruleset, other parameters may be required
+}
+
+impl RulesetInfo {
+    pub fn new(&mut self) -> Self {
+        // TODO: Use rule_set_id in DeviceDescriptor to determine rulesetId and authority
+        authority: String::from("ng"),
+        rulesetId: String::from("NccTvBandWhiteSpace-2019"),
+        maxLocationChange: Some(100.0),
+        maxPollingSecs: Some(86400),
+        other: None,
+    }
 }
 
 #[derive(Serialize, Deserialize)]
