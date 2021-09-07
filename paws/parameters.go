@@ -73,6 +73,12 @@ type DeviceOwner struct {
 	Operator vCard `json:"operator"` // Optional
 }
 
+// Rulesets
+// 	NCC
+//  FCC
+//  ETSI
+//  ICASA Ruleset (ICASA-TVWS-2018).
+
 type RulesetInfo struct {
 	Authority         string `json:"authority"`
 	RulesetId         string `json:"rulesetId"`
