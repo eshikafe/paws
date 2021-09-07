@@ -12,11 +12,16 @@ package paws
 //      "id": "idString"
 //    }
 
+type PAWSHandler struct {
+	request  Request
+	response Response
+}
+
 type Request struct {
-	Jsonrpc string     `json:"jsonrpc"`
-	Method  string     `json:"method"`
-	Params  InitReqMsg `json:"params"`
-	Id      string     `json:"id"`
+	Jsonrpc string  `json:"jsonrpc"`
+	Method  string  `json:"method"`
+	Params  InitReq `json:"params"`
+	Id      string  `json:"id"`
 }
 
 // PAWS Response
@@ -27,26 +32,9 @@ type Request struct {
 //   "id": "idString"
 // }
 type Response struct {
-	Jsonrpc string      `json:"jsonrpc"`
-	Result  InitRespMsg `json:"result"`
-	Id      string      `json:"id"`
-}
-
-// PAWS Error Response
-// The error JSON-RPC Response for PAWS has the following form:
-// {
-//   "jsonrpc": "2.0",
-//   "error": {
-// 		"code": -102,
-// 		"message": "An appropriate error message.",
-// 		"data": { ... }
-//   },
-//   "id": "idString"
-// }
-type ErrorResponse struct {
-	Jsonrpc string `json:"jsonrpc"`
-	Error   Error  `json:"error"`
-	Id      string `json:"id"`
+	Jsonrpc string   `json:"jsonrpc"`
+	Result  InitResp `json:"result"`
+	Id      string   `json:"id"`
 }
 
 // Method Name: spectrum.paws.init                                                       |
@@ -54,7 +42,7 @@ type ErrorResponse struct {
 //    Response: INIT_RESP
 
 // INIT_REQ message
-type InitReqMsg struct {
+type InitReq struct {
 	Type       string           `json:"type"`
 	Version    string           `json:"version"`
 	DeviceDesc DeviceDescriptor `json:"deviceDesc"`         // REQUIRED
@@ -62,8 +50,8 @@ type InitReqMsg struct {
 	//Other Any  // OPTIONAL
 }
 
-// INIT_RES message
-type InitRespMsg struct {
+// INIT_RESP message
+type InitResp struct {
 	Type           string        `json:"type"`
 	Version        string        `json:"version"`
 	RulesetInfos   []RulesetInfo `json:"rulesetInfos"`             // REQUIRED
@@ -71,22 +59,30 @@ type InitRespMsg struct {
 	//other: Any,
 }
 
-func (msg *Request) InitMsg() Request {
+func (res *InitReq) init() InitReq {
+	res.Type = "INIT_REQ"
+	res.Version = PAWSVersion
+	res.DeviceDesc.SerialNumber = "XXX"
+	res.DeviceDesc.ManufacturerId = "YYY"
+	res.DeviceDesc.ModelId = "ZZ"
+	res.DeviceDesc.RulesetIds = []string{"NccTvBandWhiteSpace-2010"}
+
+	// TODO: get Lat/Long from GPS module or node config
+	res.Location.Point.Center.Latitude = 6.5
+	res.Location.Point.Center.Longitude = 3.35
+	return *res
+}
+
+func (msg *Request) Init() Request {
+	var init_req InitReq
 	msg.Jsonrpc = "2.0"
 	msg.Method = "spectrum.paws.init"
-	msg.Params.Type = "INIT_REQ"
-	msg.Params.Version = PAWSVersion
-	msg.Params.DeviceDesc.SerialNumber = "XXX"
-	msg.Params.DeviceDesc.ManufacturerId = "YYY"
-	msg.Params.DeviceDesc.ModelId = "ZZ"
-	msg.Params.DeviceDesc.RulesetIds = []string{"NccTvBandWhiteSpace-2010"}
-	msg.Params.Location.Point.Center.Latitude = 6.5
-	msg.Params.Location.Point.Center.Longitude = 3.35
+	msg.Params = init_req.init()
 	msg.Id = "xxxxxx"
 	return *msg
 }
 
-func (msg *Response) InitMsg() Response {
+func (msg *Response) Init() Response {
 	msg.Jsonrpc = JSONVersion
 	msg.Result.Type = "INIT_RESP"
 	msg.Result.Version = PAWSVersion
