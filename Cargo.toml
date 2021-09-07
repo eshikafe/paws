@@ -18,6 +18,7 @@ redis = { version = "0.20.2", features=["tls"]}
 env_logger = "0.8.4"
 log = "0.4.14"
 mac_address = "1.1.1"
+jsonrpc-v2 = "0.10.1"
 
 [features]
 full = ["client","server"]
