@@ -12,7 +12,7 @@ use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::fmt::Write;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Point {
     latitude: Float,
     longitude: Float,
@@ -28,7 +28,7 @@ impl Point {
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Ellipse {
     center: Point, // REQUIRED
 
@@ -53,7 +53,7 @@ impl Ellipse {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Polygon {
     exterior: Vec<Point>, // REQUIRED
 }
@@ -66,14 +66,14 @@ impl Polygon {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum Loc {
     Point(Ellipse),
     Region(Polygon),
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct GeoLocation {
     #[serde(flatten)]
     loc: Loc, // point and region are  mutually exclusive
@@ -92,7 +92,7 @@ impl GeoLocation {
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct DeviceDescriptor {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub serialNumber: Option<String>, // Optional: PAWS, Required: FCC, ETSI
@@ -197,7 +197,7 @@ pub struct DeviceOwner {
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct RulesetInfo {
     pub authority: String, // Required
     pub rulesetId: String, // Required
@@ -214,22 +214,24 @@ pub struct RulesetInfo {
 }
 
 impl RulesetInfo {
-    pub fn new(&mut self) -> Self {
+    pub fn new() -> Self {
+        Self {
         // TODO: Use rule_set_id in DeviceDescriptor to determine rulesetId and authority
         authority: String::from("ng"),
         rulesetId: String::from("NccTvBandWhiteSpace-2019"),
         maxLocationChange: Some(100.0),
         maxPollingSecs: Some(86400),
         other: None,
+        }
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct DbUpdateSpec {
     databases: Vec<DatabaseSpec>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct DatabaseSpec {
     name: String, // Required, max length: 64 octets
     uri: String,  // Required, max length: 1024 octets
