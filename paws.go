@@ -1,9 +1,7 @@
 // copyright 2021 TVWS Project
 package main
 
-import (
-	"paws/paws"
-)
+import "paws/paws"
 
 func main() {
 	// fmt.Println("PAWS protocol, version " + paws.PAWSVersion)
