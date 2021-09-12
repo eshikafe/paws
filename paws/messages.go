@@ -1,4 +1,3 @@
-// Copyright 2021 Austin Aigbe
 // Copyright 2021 TVWS-Project
 
 package paws
@@ -75,7 +74,7 @@ func (res *InitReq) init() InitReq {
 
 func (msg *Request) Init() Request {
 	var init_req InitReq
-	msg.Jsonrpc = "2.0"
+	msg.Jsonrpc = JSONVersion
 	msg.Method = "spectrum.paws.init"
 	msg.Params = init_req.init()
 	msg.Id = "xxxxxx"
