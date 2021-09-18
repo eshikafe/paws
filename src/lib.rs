@@ -2,23 +2,24 @@
 // PAWS - Protocol to Access White Space Database
 // Compliant with RFC 7545
 
+// pub mod errors;
 pub mod types;
 pub mod parameters;
 pub mod method;
-// pub mod errors;
 pub mod version;
 pub mod redis_client;
 pub mod server;
 pub mod message;
 
 
+
 #[cfg(test)]
 mod test_cases {
-    use super::redis_client as rc;
-    use super::parameters::get_mac_addr;
-    use super::server;
-    use super::message;
-    use super::method;
+    // use super::redis_client as rc;
+    // use super::parameters::get_mac_addr;
+    // use super::server;
+    // use super::message;
+    // use super::method;
     
     #[test]
     #[ignore]
@@ -41,12 +42,13 @@ mod test_cases {
 
     
     #[test]
-    #[ignore]
+   
     fn test_server() {
         server::start();
     }
 
     #[test]
+    #[ignore]
     fn test_message() {
         let init_req = message::InitReq::new();
         let req = message::Request::new(init_req);
