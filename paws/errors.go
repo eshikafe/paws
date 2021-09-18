@@ -9,6 +9,18 @@ type Error struct {
 	Data    string `json:"data,omitempty"`
 }
 
+var (
+	ErrVersion         = -101 // "PAWS Error: The database does not support the specified version of the message
+	ErrUnsupported     = -102 // "The Database does not support the device
+	ErrUnimplemented   = -103
+	ErrOutsideCoverage = -104
+	ErrDatabaseChange  = -105
+	ErrMissing         = -201
+	ErrInvalidValue    = -202
+	ErrUnAuthorized    = -301 // "The device is not authorized to use the database
+	ErrNotRegistered   = -302
+)
+
 func newError(code int) Error {
 	var msg string
 
@@ -29,18 +41,6 @@ func newError(code int) Error {
 func (err *Error) Error() string {
 	return err.Message
 }
-
-var (
-	ErrVersion         = -101 // "PAWS Error: The database does not support the specified version of the message
-	ErrUnsupported     = -102 // "The Database does not support the device
-	ErrUnimplemented   = -103
-	ErrOutsideCoverage = -104
-	ErrDatabaseChange  = -105
-	ErrMissing         = -201
-	ErrInvalidValue    = -202
-	ErrUnAuthorized    = -301 // "The device is not authorized to use the database
-	ErrNotRegistered   = -302
-)
 
 // PAWS Error Response
 // The error JSON-RPC Response for PAWS has the following form:

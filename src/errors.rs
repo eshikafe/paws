@@ -4,19 +4,121 @@
 // If the Database responds to a PAWS request message with an error, it
 // MUST include an Error element.
 
-use std::fmt;
+use env_logger;
+use log::error;
 use serde::Deserialize;
 use serde::Serialize;
-use log::error;
-use env_logger;
+use std::fmt;
 
 use crate::types::Int;
+use crate::version::*;
 
+// PAWS errors
+pub enum ErrorCode {
+    Version,         // -101 - Database does not support the specified version of the message
+    Unsupported,     // -102 - Database does not support the device
+    Unimplemented, // -103 - The Database does not implement the optional request or optional feature
+    OutsideCoverage, // -104 - The specified geolocation is outside the coverage area of the Database
+    DatabaseChange,  // -105 - Database has changed its URI
+    Missing,         // -201 - A required parameter is missing
+    InvalidValue,    // -202 - A parameter value is invalid in some way
+    Unauthorized,    // -301 - Device is not authorized to use the database
+    NotRegistered,   // -302 - Device registration required, but the device is not registered
+}
+
+impl ErrorCode {
+    fn to_int(&self) -> Int {
+        match *self {
+            ErrorCode::Version => -101,
+            ErrorCode::Unsupported => -102,
+            ErrorCode::Unimplemented => -103,
+            ErrorCode::OutsideCoverage => -104,
+            ErrorCode::DatabaseChange => -105,
+            ErrorCode::Missing => -201,
+            ErrorCode::InvalidValue => -202,
+            ErrorCode::Unauthorized => -301,
+            ErrorCode::NotRegistered => -302,
+        }
+    }
+
+    fn to_message(&self) -> String {
+        match *self {
+            ErrorCode::Version => String::from("Database does not support message version"),
+            ErrorCode::Unsupported => String::from("Database does not support the device"),
+            ErrorCode::Unimplemented => String::from(
+                "The Database does not implement the optional request or optional feature",
+            ),
+            ErrorCode::OutsideCoverage => {
+                String::from("Specified geolocation is outside the coverage area of the Database")
+            }
+            ErrorCode::DatabaseChange => String::from("Database has changed its URI"),
+            ErrorCode::Missing => String::from("A required parameter is missing"),
+            ErrorCode::InvalidValue => String::from("A parameter value is invalid in some way"),
+            ErrorCode::Unauthorized => String::from("Device is not authorized to use the database"),
+            ErrorCode::NotRegistered => {
+                String::from("Device registration required, but the device is not registered")
+            }
+        }
+    }
+}
+
+// RFC 7545 Section 5.17.  Error Element
 #[derive(Serialize, Deserialize)]
 pub struct Error {
-    code: Int,        // range -32768 to 32767
-    message: String,  // Length: 128 octets
-    data: String,
+    code: Int,
+    message: String, // Length: 128 octets
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    data: Option<String>,
+}
+
+impl Error {
+    fn new(code: ErrorCode) -> Self {
+        match code {
+            ErrorCode::Version
+            | ErrorCode::Unsupported
+            | ErrorCode::Unimplemented
+            | ErrorCode::InvalidValue
+            | ErrorCode::Unauthorized
+            | ErrorCode::NotRegistered => Self {
+                code: code.to_int(),
+                message: code.to_message(),
+                data: None,
+            },
+            ErrorCode::OutsideCoverage => {
+                let data = String::from("");
+                Self {
+                    code: code.to_int(),
+                    message: code.to_message(),
+                    data: Some(data),
+                }
+            }
+            ErrorCode::Missing => {
+                let data = String::from("");
+                Self {
+                    code: code.to_int(),
+                    message: code.to_message(),
+                    data: Some(data),
+                }
+            }
+            ErrorCode::DatabaseChange => {
+                let data = String::from("DbUpdateSpec");
+                Self {
+                    code: code.to_int(),
+                    message: code.to_message(),
+                    data: Some(data),
+                }
+            }
+            ErrorCode::OutsideCoverage => {
+                let data = String::from("alternate database");
+                Self {
+                    code: code.to_int(),
+                    message: code.to_message(),
+                    data: Some(data),
+                }
+            }
+        }
+    }
 }
 
 // PAWS Error Response
@@ -30,38 +132,20 @@ pub struct Error {
 //   },
 //   "id": "idString"
 // }
-pub struct ErrorResponse{
-	jsonrpc: String,
-	error: Error,
-	id: String,
+
+#[derive(Serialize, Deserialize)]
+pub struct ErrorResponse {
+    jsonrpc: String,
+    error: Error,
+    id: String,
 }
 
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let err_msg = match self.code {
-            -101 => "[VERSION] Database does not support the specified version of the message",
-            -102 => "[UNSUPPORTED] Database does not support the device",
-            -103 => "[UNIMPLEMENTED] Database does not implement the optional request or optional feature",
-            -104 => "[OUTSIDE_COVERAGE] Specified geolocation is outside the coverage area of the Database",
-            -105 => "[DATABASE_CHANGE] Database has changed its URI",
-            -201 => "[MISSING]  Required parameter is missing",
-            -202 => "[INVALID_VALUE] A parameter value is invalid in some way",
-            -301 => "[UNAUTHORIZED] The device is not authorized to use the Database.",
-            -302 => "NOT_REGISTERED Device registration required, but the device is not registered",
-            _ => "[Unknown]",
-
-        };
-
-        write!(f, "{}", err_msg)
-    }
-}
-
-impl fmt::Debug for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "Error {{ code: {}, message: {} }}",
-            self.code, self.message
-        )
+impl ErrorResponse {
+    pub fn new(err: ErrorCode) -> Self {
+        Self {
+            jsonrpc: JSON_RPC_VERSION.to_string(),
+            error: Error::new(err),
+            id: String::from("xxxx"),
+        }
     }
 }
