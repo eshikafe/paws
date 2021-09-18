@@ -17,6 +17,8 @@ func newError(code int) Error {
 		msg = "Database does not support message version"
 	case ErrUnsupported:
 		msg = "Database does not support the device"
+	case ErrUnAuthorized:
+		msg = "The device is not authorized to use this database"
 	}
 	return Error{
 		Code:    code,
@@ -36,7 +38,7 @@ var (
 	ErrDatabaseChange  = -105
 	ErrMissing         = -201
 	ErrInvalidValue    = -202
-	ErrUnAuthorized    = -301
+	ErrUnAuthorized    = -301 // "The device is not authorized to use the database
 	ErrNotRegistered   = -302
 )
 
