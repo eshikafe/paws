@@ -71,11 +71,15 @@ async fn get_paws_version() -> Result<impl warp::Reply, warp::Rejection> {
 }
 
 async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
+    println!("{:?}", req);
     if req.method == String::from("spectrum.paws.init") {
         // Get ruleset from Request
         let ruleset = req.ruleset();
         let res = Response::new(ruleset);
         Ok(warp::reply::json(&res))
+
+    // TODO: Ensure that the location is not outside the regulatory domain
+    //  Use reverse geocoding 
     }else {
         let err = ErrorResponse::new(ErrorCode::Unsupported);
         Ok(warp::reply::json(&err))
@@ -88,8 +92,8 @@ async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
 // If the location is outside all regulatory domain supported by the
 // Database, the Database MUST respond with an OUTSIDE_COVERAGE error
 // Use reserve geocoding: convert coordinates to country
-fn is_reg_domain(latitude: f64, longitude: f64) -> bool{
-    return true;
+fn reverse_geocode(latitude: f64, longitude: f64) -> String{
+    return String::from("ng");
 }
 
 // async fn paws_register() -> Result<impl warp::Reply, warp::Rejection> {

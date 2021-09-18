@@ -59,7 +59,8 @@ curl --request POST localhost:3030/v1beta/paws/init \
         "point": {
             "center": {"latitude": 37.0, "longitude": -101.3}
         }
-    },
+    }
+},
 "id": "idString"
 }'
 ```
