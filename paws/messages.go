@@ -17,10 +17,11 @@ type PAWSHandler struct {
 }
 
 type Request struct {
-	Jsonrpc string  `json:"jsonrpc"`
-	Method  string  `json:"method"`
-	Params  InitReq `json:"params"`
-	Id      string  `json:"id"`
+	Jsonrpc string `json:"jsonrpc"`
+	Method  string `json:"method"`
+	//ApiVersion string  `json:"apiVersion"` // "v1beta"
+	Params InitReq `json:"params"`
+	Id     string  `json:"id"`
 }
 
 // PAWS Response
