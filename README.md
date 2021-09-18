@@ -8,6 +8,10 @@ API version: v1beta.
 
 The API allows you to interact with the PAWS protocol.
 
+## Prerequisite
+
+- Install [Rust](https://www.rust-lang.org/tools/install).
+
 ## Setup
 
 - Clone the repo: `git clone https://github.com/eshikafe/paws.git`
