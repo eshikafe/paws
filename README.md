@@ -4,6 +4,8 @@ PAWS - Protocol to Access White Space database [RFC 7545]
 
 ## PAWS API
 
+API version: v1beta.
+
 The API allows you to interact with the PAWS protocol.
 
 Start the PAWS server with `cargo run --bin server` and then access the API with URL `http://localhost:3030/v1beta/paws`
@@ -20,10 +22,13 @@ Example
 
 ```
 curl --request GET localhost:3030/v1beta/paws/version
+```
 
-Result
+Response:
+
+```
 {
-    "PAWS Version": "1.0"
+    "pawsVersion": "1.0"
 }
 
 ```
@@ -57,9 +62,11 @@ curl --request POST localhost:3030/v1beta/paws/init \
     },
 "id": "idString"
 }'
+```
 
-Result
+Response:
 
+```
 {
     "jsonrpc": "2.0",
     "result": {
