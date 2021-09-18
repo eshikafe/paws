@@ -8,7 +8,12 @@ API version: v1beta.
 
 The API allows you to interact with the PAWS protocol.
 
-Start the PAWS server with `cargo run --bin server` and then access the API with URL `http://localhost:3030/v1beta/paws`
+## Setup
+
+- Clone the repo: `git clone https://github.com/eshikafe/paws.git`
+- Change directory: `cd paws`
+- Start the PAWS server with `cargo run --bin server`
+- Access the API via URL `http://localhost:3030/v1beta/paws`
 
 ## Endpoints
 
@@ -67,7 +72,7 @@ curl --request POST localhost:3030/v1beta/paws/init \
 
 Response:
 
-```=json
+```
 {
     "jsonrpc": "2.0",
     "result": {
