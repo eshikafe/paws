@@ -1,9 +1,21 @@
 [package]
-name = "paws"
+name = "pawslib"
 description = "Protocol to Access White-Space (PAWS) Databases"
 version = "0.1.0"
 authors = ["TVWS-Project Team"]
 edition = "2018"
+
+[lib]
+name = "paws"
+path = "src/lib.rs"
+
+[[bin]]
+name = "server"
+path = "src/server.rs"
+
+[[bin]]
+name = "client"
+path = "src/client.rs"
 
 [dependencies]
 serde = { version = "1.0.126", features = ["derive"] }
@@ -13,15 +25,15 @@ tokio = { version = "1", features = ["full"] }
 # dependency: OpenSSL
 # sudo apt-get install pkg-config libssl-dev
 # reqwest = { version = "0.11.3", features = ["json"] }
-# warp = "0.3.1"
+warp = "0.3.1"
 redis = { version = "0.20.2", features=["tls"]}
 env_logger = "0.8.4"
 log = "0.4.14"
 mac_address = "1.1.1"
-# jsonrpc-v2 = "0.10.1"
-hyper = "0.14.12"
 
-[features]
-full = ["client","server"]
-client = []
-server = []
+
+
+# [features]
+# full = ["client","server"]
+# client = []
+# server = []
