@@ -87,6 +87,7 @@ async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
     
 }
 
+// TODO
 // latitude = Request.location.loc.point.center.latitude
 // longitude = Request.location.loc.point.center.longitude
 // If the location is outside all regulatory domain supported by the
