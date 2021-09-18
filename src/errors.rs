@@ -15,15 +15,15 @@ use crate::version::*;
 
 // PAWS errors
 pub enum ErrorCode {
-    Version,         // -101 - Database does not support the specified version of the message
-    Unsupported,     // -102 - Database does not support the device
-    Unimplemented, // -103 - The Database does not implement the optional request or optional feature
-    OutsideCoverage, // -104 - The specified geolocation is outside the coverage area of the Database
-    DatabaseChange,  // -105 - Database has changed its URI
-    Missing,         // -201 - A required parameter is missing
-    InvalidValue,    // -202 - A parameter value is invalid in some way
-    Unauthorized,    // -301 - Device is not authorized to use the database
-    NotRegistered,   // -302 - Device registration required, but the device is not registered
+    Version,
+    Unsupported,
+    Unimplemented,
+    OutsideCoverage,
+    DatabaseChange,
+    Missing,
+    InvalidValue,
+    Unauthorized,
+    NotRegistered,
 }
 
 impl ErrorCode {
