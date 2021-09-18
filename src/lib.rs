@@ -2,13 +2,12 @@
 // PAWS - Protocol to Access White Space Database
 // Compliant with RFC 7545
 
-// pub mod errors;
+pub mod errors;
 pub mod types;
 pub mod parameters;
 pub mod method;
 pub mod version;
 pub mod redis_client;
-// pub mod server;
 pub mod message;
 
 
@@ -18,8 +17,9 @@ mod test_cases {
     use super::redis_client as rc;
     use super::parameters::get_mac_addr;
     //use super::server;
-    use super::message;
+    use super::message::*;
     use super::method;
+    use super::errors::*;
     
     #[test]
     #[ignore]
@@ -50,11 +50,17 @@ mod test_cases {
     #[test]
     #[ignore]
     fn test_message() {
-        let init_req = message::InitReq::new();
-        let req = message::Request::new(init_req);
+        let req = Request::new();
         let s = serde_json::to_string_pretty(&req).unwrap();
         println!("JSON: PAWS INIT_REQ: {}", s);
         println!("Struct: PAWS INIT_REQ: {:?}", req);
         // println!("Struct: PAWS INIT_REQ: {:?}", init_req);
+    }
+
+    #[test]
+    fn test_error() {
+        let err = ErrorResponse::new(ErrorCode::OutsideCoverage);
+        let s = serde_json::to_string_pretty(&err).unwrap();
+        println!("PAWS Error: {}", s);
     }
 }
