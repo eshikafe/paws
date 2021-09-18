@@ -1,3 +1,6 @@
+// Copyright (c) 2021 TVWS-Project
+// PAWS - Protocol to Access White Space Database
+// Compliant with RFC 7545
 
 use paws::version::*;
 // use paws::method::*;
@@ -73,13 +76,16 @@ async fn get_paws_version() -> Result<impl warp::Reply, warp::Rejection> {
 async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
     println!("{:?}", req);
     if req.method == String::from("spectrum.paws.init") {
+
+        // TODO: Ensure that the location is not outside the regulatory domain
+        //  Use reverse geocoding 
+        // if reverse_geocode(req.lat, req.long) == "ng" proceed otherwise return ErrorCode::OutsideCovergae
+
         // Get ruleset from Request
         let ruleset = req.ruleset();
         let res = Response::new(ruleset);
         Ok(warp::reply::json(&res))
 
-    // TODO: Ensure that the location is not outside the regulatory domain
-    //  Use reverse geocoding 
     }else {
         let err = ErrorResponse::new(ErrorCode::Unsupported);
         Ok(warp::reply::json(&err))
