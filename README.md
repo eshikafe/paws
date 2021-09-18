@@ -6,7 +6,7 @@ PAWS - Protocol to Access White Space database [RFC 7545]
 
 The API allows you to interact with the PAWS protocol.
 
-Start the PAWS server with `cargo run --bin server` to access the API.
+Start the PAWS server with `cargo run --bin server` to access the API.<br>
 API is available at `http://localhost:3030/v1beta/paws`
 
 ## Endpoints
