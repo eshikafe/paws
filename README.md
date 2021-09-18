@@ -23,7 +23,7 @@ GET `/version`
 
 Returns the PAWS protocol version.
 
-Example
+Example: Using curl. For simplicity just install and use [Postman](https://www.postman.com/) to test the API.
 
 ```
 curl --request GET localhost:3030/v1beta/paws/version
