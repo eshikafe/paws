@@ -67,7 +67,7 @@ curl --request POST localhost:3030/v1beta/paws/init \
 
 Response:
 
-```
+```=json
 {
     "jsonrpc": "2.0",
     "result": {
