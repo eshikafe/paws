@@ -1,19 +1,22 @@
+
+use paws::version::*;
+// use paws::method::*;
+use paws::message::*;
+
 use warp::Filter;
 use serde_json::{json, Value};
 use std::collections::HashMap;
-use paws::version::*;
-use paws::method::*;
-use paws::message::*;
+
 // use jsonrpc_v2::{Data, Error, Params, Server};
 //use log::info;
 
 #[tokio::main]
 async fn main() {
     // env_logger::init();
-    start();
+    start().await;
 }
 
-pub async fn start() {
+async fn start() {
 
     let port = 3030;
     println!("PAWS server starting on port {}", port);
@@ -25,13 +28,13 @@ pub async fn start() {
 
 
 //    PAWS APIs
-//    localhost:3030/v1beta/spectrumdb
+//    localhost:3030/v1beta/paws
 
     // GET /version
-    // curl -GET localhost:3030/v1beta/spectrumdb/version
+    // curl -GET localhost:3030/v1beta/paws/version
     let get_version = warp::get()
         .and(warp::path("v1beta"))
-        .and(warp::path("spectrumdb"))
+        .and(warp::path("paws"))
         .and(warp::path("version"))
         .and(warp::path::end())
       //  .and(json_body())
@@ -39,20 +42,20 @@ pub async fn start() {
 
      
 //     // POST /init
-//     // curl --request POST localhost:3030/v1beta/spectrumdb/init
+//     // curl --request POST localhost:3030/v1beta/paws/init
 //     let post_init = warp::post()
 //         .and(warp::path("v1beta"))
-//         .and(warp::path("spectrumdb"))
+//         .and(warp::path("paws"))
 //         .and(warp::path("init"))
 //         .and(warp::path::end())
 //         .and(json_body())
 //         .and_then(paws_init);
 
 //     // POST /register
-//     // curl --request POST localhost:3030/v1beta/spectrumdb/register
+//     // curl --request POST localhost:3030/v1beta/paws/register
 //     let post_register = warp::post()
 //         .and(warp::path("v1beta"))
-//         .and(warp::path("spectrumdb"))
+//         .and(warp::path("paws"))
 //         .and(warp::path("register"))
 //         .and(warp::path::end())
 //         .and_then(paws_register);
@@ -86,6 +89,6 @@ async fn get_paws_version() -> Result<impl warp::Reply, warp::Rejection> {
 //     Ok(warp::reply::json(&result))
 // }
 
-fn json_body() -> impl Filter<Extract = (Request<InitReq>,), Error = warp::Rejection> + Clone {
-    warp::body::json()
-}
+// fn json_body() -> impl Filter<Extract = (Request<InitReq>,), Error = warp::Rejection> + Clone {
+//     warp::body::json()
+// }

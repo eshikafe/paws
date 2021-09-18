@@ -1,5 +1,5 @@
 // use hyper::{Body, Method, Request, Uri};
-use paws::method;
+//use paws::method;
 
 /// The POST method is the only method REQUIRED for PAWS.
 /// A PAWS request message is carried in the body of an HTTP POST request.
