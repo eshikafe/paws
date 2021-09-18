@@ -92,6 +92,8 @@ async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
 // If the location is outside all regulatory domain supported by the
 // Database, the Database MUST respond with an OUTSIDE_COVERAGE error
 // Use reserve geocoding: convert coordinates to country
+// Reference: https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon
+
 fn reverse_geocode(latitude: f64, longitude: f64) -> String{
     return String::from("ng");
 }
