@@ -113,16 +113,16 @@ pub struct DeviceDescriptor {
 
 impl DeviceDescriptor {
     pub fn new(regulator: &str) -> Self {
-        //let regulatory_domains = vec!["NCC", "FCC", "ETSI", "PAWS"];
+        //let regulatory_domains = vec!["ncc", "fcc", "etsi", "paws", "ofcom"];
         let mut other_params = HashMap::new();
         let mut rule_set_id = String::new();
 
         match regulator {
-            "NCC" => {
+            "ncc" => {
                 other_params.insert(String::from("NccId"), json!("YYY"));
                 rule_set_id = String::from("NccTvBandWhiteSpace-2019");
             }
-            "FCC" => {
+            "fcc" => {
                 other_params.insert(String::from("FccId"), json!("YYY"));
                 other_params.insert(String::from("fccTvbdDeviceType"), json!("FIXED"));
                 rule_set_id = String::from("FccTvBandWhiteSpace-2010");
@@ -214,17 +214,31 @@ pub struct RulesetInfo {
 }
 
 impl RulesetInfo {
-    pub fn new() -> Self {
-        Self {
-        // TODO: Use rule_set_id in DeviceDescriptor to determine rulesetId and authority
-        authority: String::from("ng"),
-        rulesetId: String::from("NccTvBandWhiteSpace-2019"),
-        maxLocationChange: Some(100.0),
-        maxPollingSecs: Some(86400),
-        other: None,
+    pub fn new(rulesetId: String) -> Self {
+
+       if rulesetId == String::from("NccTvBandWhiteSpace-2019") {
+           Self {
+                // TODO: Use rule_set_id in DeviceDescriptor to determine rulesetId and authority
+                authority: String::from("ng"),
+                rulesetId: String::from("NccTvBandWhiteSpace-2019"),
+                maxLocationChange: Some(100.0),
+                maxPollingSecs: Some(86400),
+                other: None,
+            }
+        } else {
+            Self {
+                // TODO: Use rule_set_id in DeviceDescriptor to determine rulesetId and authority
+                authority: String::from("ng"),
+                rulesetId: String::from("NccTvBandWhiteSpace-2019"),
+                maxLocationChange: Some(100.0),
+                maxPollingSecs: Some(86400),
+                other: None,
+            }
         }
+
     }
-}
+        
+ }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct DbUpdateSpec {

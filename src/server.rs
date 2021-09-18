@@ -2,24 +2,21 @@
 use paws::version::*;
 // use paws::method::*;
 use paws::message::*;
+use paws::errors::*;
 
 use warp::Filter;
 use serde_json::{json, Value};
 use std::collections::HashMap;
 
 // use jsonrpc_v2::{Data, Error, Params, Server};
-//use log::info;
+// use log::info;
 
 #[tokio::main]
 async fn main() {
+
     // env_logger::init();
-    start().await;
-}
-
-async fn start() {
-
     let port = 3030;
-    println!("PAWS server starting on port {}", port);
+    println!("Starting PAWS server on port {}", port);
 
 //   The POST method is the only method REQUIRED for PAWS.  
 //   If a Database chooses to support GET, it MUST be an escaped URI.
@@ -41,18 +38,18 @@ async fn start() {
         .and_then(get_paws_version);
 
      
-//     // POST /init
-//     // curl --request POST localhost:3030/v1beta/paws/init
-//     let post_init = warp::post()
-//         .and(warp::path("v1beta"))
-//         .and(warp::path("paws"))
-//         .and(warp::path("init"))
-//         .and(warp::path::end())
-//         .and(json_body())
-//         .and_then(paws_init);
+    // POST /init
+    // Check the README file for an example
+    let post_init_proc = warp::post()
+        .and(warp::path("v1beta"))
+        .and(warp::path("paws"))
+        .and(warp::path("init"))
+        .and(warp::path::end())
+        .and(json_body())
+        .and_then(paws_init);
 
 //     // POST /register
-//     // curl --request POST localhost:3030/v1beta/paws/register
+//     // Check the README file for an example
 //     let post_register = warp::post()
 //         .and(warp::path("v1beta"))
 //         .and(warp::path("paws"))
@@ -60,7 +57,7 @@ async fn start() {
 //         .and(warp::path::end())
 //         .and_then(paws_register);
 
-    let routes = get_version; //.or(post_init).or(post_register);
+    let routes = get_version.or(post_init_proc);//.or(post_register);
 
     warp::serve(routes)
         .run(([127, 0, 0, 1], port))
@@ -69,19 +66,31 @@ async fn start() {
 
 async fn get_paws_version() -> Result<impl warp::Reply, warp::Rejection> {
     let mut result = HashMap::new();
-    result.insert(String::from("PAWS Version"), json!(PAWS_VERSION));
+    result.insert(String::from("pawsVersion"), json!(PAWS_VERSION));
     Ok(warp::reply::json(&result))
 }
 
-// async fn paws_init(req: Request<InitReq>) -> Result<impl warp::Reply, warp::Rejection> {
-//     if req.method == String::from("spectrum.paws.init") {
-//         let res = Response::<InitResp>::new("init");
-//         Ok(warp::reply::json(&res))
-//     }else {
-//         Ok(warp::reply::json("Error"))
-//     }
+async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
+    if req.method == String::from("spectrum.paws.init") {
+        // Get ruleset from Request
+        let ruleset = req.ruleset();
+        let res = Response::new(ruleset);
+        Ok(warp::reply::json(&res))
+    }else {
+        let err = ErrorResponse::new(ErrorCode::Unsupported);
+        Ok(warp::reply::json(&err))
+    }
     
-// }
+}
+
+// latitude = Request.location.loc.point.center.latitude
+// longitude = Request.location.loc.point.center.longitude
+// If the location is outside all regulatory domain supported by the
+// Database, the Database MUST respond with an OUTSIDE_COVERAGE error
+// Use reserve geocoding: convert coordinates to country
+fn is_reg_domain(latitude: f64, longitude: f64) -> bool{
+    return true;
+}
 
 // async fn paws_register() -> Result<impl warp::Reply, warp::Rejection> {
 //     let mut result = HashMap::new();
@@ -89,6 +98,6 @@ async fn get_paws_version() -> Result<impl warp::Reply, warp::Rejection> {
 //     Ok(warp::reply::json(&result))
 // }
 
-// fn json_body() -> impl Filter<Extract = (Request<InitReq>,), Error = warp::Rejection> + Clone {
-//     warp::body::json()
-// }
+fn json_body() -> impl Filter<Extract = (Request,), Error = warp::Rejection> + Clone {
+    warp::body::json()
+}
