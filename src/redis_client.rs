@@ -1,4 +1,4 @@
-// (c) 2021 TVWS-Project
+// Copyright (c) 2021 TVWS-Project
 
 use redis::Commands;
 
