@@ -109,14 +109,6 @@ impl Error {
                     data: Some(data),
                 }
             }
-            ErrorCode::OutsideCoverage => {
-                let data = String::from("alternate database");
-                Self {
-                    code: code.to_int(),
-                    message: code.to_message(),
-                    data: Some(data),
-                }
-            }
         }
     }
 }
