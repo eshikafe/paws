@@ -30,6 +30,12 @@ async fn main() {
 //    PAWS APIs
 //    localhost:3030/v1beta/paws
 
+    let index = warp::get()
+        .and(warp::path("v1beta"))
+        .and(warp::path("paws"))
+        .and(warp::path::end())
+        .and_then(home);
+
     // GET /version
     // curl -GET localhost:3030/v1beta/paws/version
     let get_version = warp::get()
@@ -37,7 +43,6 @@ async fn main() {
         .and(warp::path("paws"))
         .and(warp::path("version"))
         .and(warp::path::end())
-      //  .and(json_body())
         .and_then(get_paws_version);
 
      
@@ -60,7 +65,7 @@ async fn main() {
 //         .and(warp::path::end())
 //         .and_then(paws_register);
 
-    let routes = get_version.or(post_init_proc);//.or(post_register);
+    let routes = get_version.or(post_init_proc).or(index);
 
     warp::serve(routes)
         .run(([127, 0, 0, 1], port))
@@ -73,13 +78,19 @@ async fn get_paws_version() -> Result<impl warp::Reply, warp::Rejection> {
     Ok(warp::reply::json(&result))
 }
 
+async fn home() -> Result<impl warp::Reply, warp::Rejection> {
+    let mut result = HashMap::new();
+    result.insert(String::from("message"), json!("Welcome to the PAWS API"));
+    Ok(warp::reply::json(&result))
+}
+
+//  A PAWS request message is carried in the body of an HTTP POST request
 async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
-    println!("{:?}", req);
     if req.method == String::from("spectrum.paws.init") {
 
-        // TODO: Ensure that the location is not outside the regulatory domain
-        //  Use reverse geocoding 
-        // if reverse_geocode(req.lat, req.long) == "ng" proceed otherwise return ErrorCode::OutsideCovergae
+        // Get device location and apply reverse geocoding 
+        let (lat, lon) = req.location();
+        println!("Latitude: {}, Longitude: {}", lat, lon);
 
         // Get ruleset from Request
         let ruleset = req.ruleset();
@@ -87,23 +98,12 @@ async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
         Ok(warp::reply::json(&res))
 
     }else {
-        let err = ErrorResponse::new(ErrorCode::Unsupported);
+        let err = ErrorResponse::new(ErrorCode::Unimplemented);
         Ok(warp::reply::json(&err))
     }
     
 }
 
-// TODO
-// latitude = Request.location.loc.point.center.latitude
-// longitude = Request.location.loc.point.center.longitude
-// If the location is outside all regulatory domain supported by the
-// Database, the Database MUST respond with an OUTSIDE_COVERAGE error
-// Use reserve geocoding: convert coordinates to country
-// Reference: https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon
-
-fn reverse_geocode(latitude: f64, longitude: f64) -> String{
-    return String::from("ng");
-}
 
 // async fn paws_register() -> Result<impl warp::Reply, warp::Rejection> {
 //     let mut result = HashMap::new();
