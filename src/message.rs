@@ -1,8 +1,9 @@
 // Copyright 2021 TVWS-Project
 
-use crate::parameters::*;
-use crate::version::*;
 use crate::method::*;
+use crate::parameters::*;
+use crate::types::*;
+use crate::version::*;
 
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -33,8 +34,34 @@ impl InitReq {
             other: None,
         }
     }
-}
 
+    pub fn location(&self) -> (Float, Float) {
+        match *self {
+            InitReq {
+                mtype: _,
+                version: _,
+                device_desc: _,
+                location:
+                    GeoLocation {
+                        loc:
+                            Loc::Point(Ellipse {
+                                center:
+                                    Point {
+                                        latitude,
+                                        longitude,
+                                    },
+                                semiMajorAxis,
+                                semiMinorAxis,
+                                orientation,
+                            }),
+                        confidence,
+                    },
+                other:_
+            } => (latitude, longitude),
+            _ => (0.0, 0.0),
+        }
+    }
+}
 
 // PAWS Request
 //    {
@@ -43,8 +70,6 @@ impl InitReq {
 //      "params": <PAWS_REQ>,
 //      "id": "idString"
 //    }
-
-//  A PAWS request message is carried in the body of an HTTP POST request
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Request {
     pub jsonrpc: String,
@@ -55,33 +80,26 @@ pub struct Request {
 
 impl Request {
     // Creates a new PAWS Request
-    // 
-    // # Example
-    // 
-    // ```
-    // # use paws::{Request, Method};
-    // let init_req = InitReq::new()
-    // let req = Request::new(init_req);
-    // assert_eq!(req.method(), "spectrum.paws.init".to_string());
-    // ```
-    // 
     pub fn new() -> Self {
-
-         Self {
-                jsonrpc: JSON_RPC_VERSION.to_string(),
-                method: String::from("spectrum.paws.init"),
-                params: InitReq::new(),
-                id: String::from("xxx"),
-            }
+        Self {
+            jsonrpc: JSON_RPC_VERSION.to_string(),
+            method: String::from("spectrum.paws.init"),
+            params: InitReq::new(),
+            id: String::from("xxx"),
+        }
     }
 
     // Revisit this implementation
-     pub fn ruleset(&self) -> String {
+    pub fn ruleset(&self) -> String {
         let ruleset_id = match &self.params.device_desc.rulesetIds {
             Some(r) => r[0].clone(),
-            None => String::from("")
+            None => String::from(""),
         };
         return ruleset_id;
+    }
+
+    pub fn location(&self) -> (Float, Float) {
+        return self.params.location();
     }
 }
 
@@ -104,11 +122,11 @@ pub struct Response {
 
 impl Response {
     pub fn new(rulesetId: String) -> Response {
-         Response {
-                jsonrpc: JSON_RPC_VERSION.to_string(),
-                result: InitResp::new(rulesetId),
-                id: String::from("xxxxxx"),
-            }
+        Response {
+            jsonrpc: JSON_RPC_VERSION.to_string(),
+            result: InitResp::new(rulesetId),
+            id: String::from("xxxxxx"),
+        }
     }
 }
 
