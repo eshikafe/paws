@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: paws-server
+spec:
+  tls:
+  - hosts:
+    - {{ .Values.pawsServer.ingress.host }}
+    secretName: {{ .Values.pawsServer.ingress.tlsSecret }}
+  rules:
+  - host: {{ .Values.pawsServer.ingress.host }} 
+    http:
+      paths:
+      - path: {{ .Values.pawsServer.ingress.path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: paws-server
+            port:
+              number: 3030
+  ingressClassName: nginx

@@ -67,7 +67,7 @@ async fn main() {
     let routes = get_version.or(post_init_proc).or(index);
 
     warp::serve(routes)
-        .run(([127, 0, 0, 1], port))
+        .run(([0, 0, 0, 0], port))
         .await;
 }
 

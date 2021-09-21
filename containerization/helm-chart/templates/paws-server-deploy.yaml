@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: paws-server
+  labels:
+    app-mode: paws-server
+spec:
+  selector:
+    app-mode: paws-server
+  ports:
+    - protocol: TCP
+      port: 3030
+---    
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paws-server
+  labels:
+    app-mode: paws-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app-mode: paws-server
+  template:
+    metadata:
+      labels:
+        app-mode: paws-server        
+    spec:
+      imagePullSecrets:
+      - name: {{ .Values.pawsServer.image.pullSecretName }}
+      containers:
+      - name: paws-server
+        image: "{{ .Values.pawsServer.image.repository }}:{{ .Values.pawsServer.image.tag }}"
+        imagePullPolicy: {{ .Values.pawsServer.image.pullPolicy }}
