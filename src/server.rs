@@ -3,7 +3,6 @@
 // Compliant with RFC 7545
 
 use paws::version::*;
-// use paws::method::*;
 use paws::message::*;
 use paws::errors::*;
 
@@ -86,6 +85,7 @@ async fn home() -> Result<impl warp::Reply, warp::Rejection> {
 
 //  A PAWS request message is carried in the body of an HTTP POST request
 async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
+    // println!("{:?}", req);
     if req.method == String::from("spectrum.paws.init") {
 
         // Get device location and apply reverse geocoding 
