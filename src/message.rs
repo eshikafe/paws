@@ -36,28 +36,15 @@ impl InitReq {
     }
 
     pub fn location(&self) -> (Float, Float) {
-        match *self {
-            InitReq {
-                mtype: _,
-                version: _,
-                device_desc: _,
-                location:
-                    GeoLocation {
-                        loc:
-                            Loc::Point(Ellipse {
-                                center:
-                                    Point {
-                                        latitude,
-                                        longitude,
-                                    },
-                                semiMajorAxis,
-                                semiMinorAxis,
-                                orientation,
-                            }),
-                        confidence,
+        match self.location.loc {
+            Loc::Point(Ellipse {
+                center:
+                    Point {
+                        latitude,
+                        longitude,
                     },
-                other:_
-            } => (latitude, longitude),
+                ..
+            }) => (latitude, longitude),
             _ => (0.0, 0.0),
         }
     }
