@@ -14,13 +14,13 @@ use std::fmt::Write;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Point {
-    latitude: Float,
-    longitude: Float,
+    pub latitude: Float,
+    pub longitude: Float,
 }
 
 impl Point {
     pub fn new(latitude: Float, longitude: Float) -> Self {
-        Point {
+        Self {
             latitude,
             longitude,
         }
@@ -30,16 +30,16 @@ impl Point {
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Ellipse {
-    center: Point, // REQUIRED
+    pub center: Point, // REQUIRED
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    semiMajorAxis: Option<Float>, // OPTIONAL
+    pub semiMajorAxis: Option<Float>, // OPTIONAL
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    semiMinorAxis: Option<Float>, // OPTIONAL
+    pub semiMinorAxis: Option<Float>, // OPTIONAL
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    orientation: Option<Float>, // OPTIONAL
+    pub orientation: Option<Float>, // OPTIONAL
 }
 
 impl Ellipse {
@@ -69,6 +69,7 @@ impl Polygon {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum Loc {
+    #[serde(rename = "point")]
     Point(Ellipse),
     Region(Polygon),
 }
@@ -76,10 +77,10 @@ pub enum Loc {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct GeoLocation {
     #[serde(flatten)]
-    loc: Loc, // point and region are  mutually exclusive
+    pub loc: Loc, // point and region are  mutually exclusive
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    confidence: Option<Int>, // OPTIONAL
+    pub confidence: Option<Int>, // OPTIONAL
 }
 
 impl GeoLocation {
