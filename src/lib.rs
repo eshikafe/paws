@@ -5,7 +5,6 @@
 pub mod errors;
 pub mod types;
 pub mod parameters;
-pub mod method;
 pub mod version;
 pub mod redis_client;
 pub mod message;
@@ -18,7 +17,6 @@ mod test_cases {
     use super::parameters::get_mac_addr;
     //use super::server;
     use super::message::*;
-    use super::method;
     use super::errors::*;
     
     #[test]
