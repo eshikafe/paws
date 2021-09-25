@@ -15,6 +15,23 @@ use env_logger::Env;
 #[tokio::main]
 async fn main() {
     env_logger::Builder::from_env(Env::new().default_filter_or("info")).init();
+    // Customized Logging
+    // env_logger::builder()
+    // .format(|buf, record| {
+    //     let ts = buf.timestamp();
+    //     let mut ls = buf.style();
+    //     ls.set_color(Color::Green);
+    //     writeln!(buf,
+    //         "{} [{}] [PAWS Server] {}", 
+    //         ts,
+    //         ls.value(record.level()),
+    //         record.args()
+    //     )
+    // })
+    // .filter(None, LevelFilter::Info)
+    // .write_style(WriteStyle::Auto)
+    // .target(Target::Stdout)
+    // .init();
     let port = 3030;
     info!("Starting PAWS server on port {}", port );
 
