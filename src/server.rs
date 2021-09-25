@@ -9,29 +9,30 @@ use paws::errors::*;
 use warp::Filter;
 use serde_json::{json, Value};
 use std::collections::HashMap;
-use log::{info, error};
-use env_logger::Env;
+use log::{info, error, LevelFilter};
+use env_logger::{WriteStyle, Target, fmt::Color} ;
+use std::io::Write;
 
 #[tokio::main]
 async fn main() {
-    env_logger::Builder::from_env(Env::new().default_filter_or("info")).init();
-    // Customized Logging
-    // env_logger::builder()
-    // .format(|buf, record| {
-    //     let ts = buf.timestamp();
-    //     let mut ls = buf.style();
-    //     ls.set_color(Color::Green);
-    //     writeln!(buf,
-    //         "{} [{}] [PAWS Server] {}", 
-    //         ts,
-    //         ls.value(record.level()),
-    //         record.args()
-    //     )
-    // })
-    // .filter(None, LevelFilter::Info)
-    // .write_style(WriteStyle::Auto)
-    // .target(Target::Stdout)
-    // .init();
+    env_logger::builder()
+    .format(|buf, record| {
+        let ts = buf.timestamp();
+        let mut ls = buf.style();
+        ls.set_color(Color::Green);
+        let module = record.module_path().unwrap();
+        writeln!(buf,
+            "{} [{}] [{}] {}", 
+            ts,
+            ls.value(record.level()),
+            module,
+            record.args()
+        )
+    })
+    .filter(None, LevelFilter::Info)
+    .write_style(WriteStyle::Auto)
+    .target(Target::Stdout)
+    .init();
     let port = 3030;
     info!("Starting PAWS server on port {}", port );
 
@@ -84,6 +85,8 @@ async fn main() {
     warp::serve(routes)
         .run(([0, 0, 0, 0], port))
         .await;
+
+    //global::shutdown_tracer_provider();
 }
 
 async fn get_paws_version() -> Result<impl warp::Reply, warp::Rejection> {
