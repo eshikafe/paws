@@ -214,9 +214,9 @@ pub struct RulesetInfo {
 }
 
 impl RulesetInfo {
-    pub fn new(rulesetId: String) -> Self {
+    pub fn new(ruleset_id: String) -> Self {
 
-       if rulesetId == String::from("NccTvBandWhiteSpace-2019") {
+       if ruleset_id == String::from("NccTvBandWhiteSpace-2019") {
            Self {
                 // TODO: Use rule_set_id in DeviceDescriptor to determine rulesetId and authority
                 authority: String::from("ng"),
