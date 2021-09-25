@@ -153,7 +153,7 @@ impl Request {
 
     pub fn location(&self) -> (Float, Float) {
         match &self.params {
-            RequestParams::Init(InitReq) => InitReq.location(),
+            RequestParams::Init(req) => req.location(),
             _ => (0.0, 0.0),
         }
     }
@@ -177,10 +177,10 @@ pub struct Response {
 }
 
 impl Response {
-    pub fn new(rulesetId: String) -> Response {
+    pub fn new(ruleset_id: String) -> Response {
         Response {
             jsonrpc: JSON_RPC_VERSION.to_string(),
-            result: ResponseParams::Init(InitResp::new(rulesetId)),
+            result: ResponseParams::Init(InitResp::new(ruleset_id)),
             id: String::from("xxxxxx"),
         }
     }
@@ -206,13 +206,13 @@ pub struct InitResp {
 }
 
 impl InitResp {
-    pub fn new(rulesetId: String) -> Self {
+    pub fn new(ruleset_id: String) -> Self {
         Self {
             mtype: Message::InitResp.to_string(),
             version: PAWS_VERSION.to_string(),
 
             // TODO: Use rule_set_id in DeviceDescriptor to determine RulesetInfo
-            ruleset_infos: vec![RulesetInfo::new(rulesetId)],
+            ruleset_infos: vec![RulesetInfo::new(ruleset_id)],
             database_change: None,
             other: None,
         }
