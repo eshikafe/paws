@@ -9,16 +9,14 @@ use paws::errors::*;
 use warp::Filter;
 use serde_json::{json, Value};
 use std::collections::HashMap;
-
-// use jsonrpc_v2::{Data, Error, Params, Server};
-// use log::info;
+use log::{info, error};
+use env_logger::Env;
 
 #[tokio::main]
 async fn main() {
-
-    // env_logger::init();
+    env_logger::Builder::from_env(Env::new().default_filter_or("info")).init();
     let port = 3030;
-    println!("Starting PAWS server on port {}", port);
+    info!("Starting PAWS server on port {}", port );
 
 //   The POST method is the only method REQUIRED for PAWS.  
 //   If a Database chooses to support GET, it MUST be an escaped URI.
@@ -72,6 +70,7 @@ async fn main() {
 }
 
 async fn get_paws_version() -> Result<impl warp::Reply, warp::Rejection> {
+    info!("Received 'GET /version' request" );
     let mut result = HashMap::new();
     result.insert(String::from("pawsVersion"), json!(PAWS_VERSION));
     Ok(warp::reply::json(&result))
@@ -87,7 +86,7 @@ async fn home() -> Result<impl warp::Reply, warp::Rejection> {
 async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
     // println!("{:?}", req);
     if req.method == String::from("spectrum.paws.init") {
-
+        info!("Received 'POST /init' request." );
         // Get device location and apply reverse geocoding 
         let (lat, lon) = req.location();
         println!("Latitude: {}, Longitude: {}", lat, lon);
@@ -99,6 +98,7 @@ async fn paws_init(req: Request) -> Result<impl warp::Reply, warp::Rejection> {
 
     }else {
         let err = ErrorResponse::new(ErrorCode::Unimplemented);
+        error!("Error in 'POST /init' request: {:?}", err.error());
         Ok(warp::reply::json(&err))
     }
     

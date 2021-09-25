@@ -63,7 +63,7 @@ impl ErrorCode {
 }
 
 // RFC 7545 Section 5.17.  Error Element
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Error {
     code: Int,
     message: String, // Length: 128 octets
@@ -125,7 +125,7 @@ impl Error {
 //   "id": "idString"
 // }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ErrorResponse {
     jsonrpc: String,
     error: Error,
@@ -139,5 +139,9 @@ impl ErrorResponse {
             error: Error::new(err),
             id: String::from("xxxx"),
         }
+    }
+
+    pub fn error(&self) -> &Error {
+        &self.error
     }
 }
