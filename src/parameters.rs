@@ -148,32 +148,32 @@ impl DeviceDescriptor {
         }
     }
 }
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub enum HeightType {
     AGL,  // Above Ground Level (default)
     AMSL, // Above Mean Sea Level
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
-pub struct AntennaCharacteristics<T> {
+#[derive(Serialize, Deserialize, Debug)]
+pub struct AntennaCharacteristics {
     height: Float,
-    heightType: HeightType,
+    heightType: HeightType, // default: AGL
     heightUncertainty: Float,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    characteristics: Option<T>,
+    characteristics: Option<HashMap<String, Value>>,
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct FrequencyRange {
     startHz: Float,
     stopHz: Float,
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct DeviceCapabilities {
     frequencyRanges: Vec<FrequencyRange>,
 
@@ -182,13 +182,14 @@ pub struct DeviceCapabilities {
     other: Option<HashMap<String, Value>>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct vCard {
     // TODO
 // use the vCard crate
 }
 
-#[derive(Serialize, Deserialize)]
+#[allow(non_snake_case)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct DeviceOwner {
     owner: vCard, // Required
 
@@ -252,7 +253,7 @@ pub struct DatabaseSpec {
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SpectrumSpec {
     rulesetInfo: RulesetInfo,
     spectrumSchedules: Vec<SpectrumSchedule>,
@@ -264,46 +265,46 @@ pub struct SpectrumSpec {
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SpectrumSchedule {
     eventTime: EventTime,
     spectra: Vec<Spectrum>,
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Spectrum {
     resolutionBwHz: Float,
     profiles: Vec<SpectrumProfile>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SpectrumProfile {
     list: Vec<SpectrumProfilePoint>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SpectrumProfilePoint {
     hz: Float,
     dbm: Float,
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct EventTime {
     startTime: String,
     stopTime: String,
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct GeoSpectrumSpec {
     location: GeoLocation,
     spectrumSpecs: Vec<SpectrumSpec>,
 }
 
 #[allow(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct DeviceValidity {
     deviceDesc: DeviceDescriptor,
     isValid: bool,

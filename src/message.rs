@@ -1,15 +1,17 @@
 // Copyright 2021 TVWS-Project
 
+
 use crate::parameters::*;
 use crate::types::*;
 use crate::version::*;
 
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::Value;
 use std::collections::HashMap;
+//use uuid::Uuid;
 
 // PAWS methods
-enum Method {
+pub enum Method {
     Init,
     Register,
     GetSpectrum,
@@ -31,9 +33,11 @@ impl Method {
     }
 }
 
-enum Message {
+pub enum Message {
     InitReq,
     InitResp,
+    RegistrationReq,
+    RegistrationResp,
 }
 
 impl Message {
@@ -41,6 +45,8 @@ impl Message {
         match *self {
             Message::InitReq => "INIT_REQ".to_string(),
             Message::InitResp => "INIT_RESP".to_string(),
+            Message::RegistrationReq => "REGISTRATION_REQ".to_string(),
+            Message::RegistrationResp => "REGISTRATION_RESP".to_string()
         }
     }
 }
@@ -49,7 +55,7 @@ impl Message {
 #[serde(untagged)]
 pub enum RequestParams {
     Init(InitReq),
-    // Register(RegistrationReq),
+    Register(RegistrationReq),
     // GetSpectrum(AvailSpectrumReq),
     // AvailSpectrumBatchReq,
     // SpectrumUseNotify,
@@ -60,13 +66,14 @@ pub enum RequestParams {
 #[serde(untagged)]
 pub enum ResponseParams {
     Init(InitResp),
-    // Register(RegistrationResp),
+    Register(RegistrationResp),
     // GetSpectrum(AvailSpectrumResp),
     // AvailSpectrumBatchResp,
     // SpectrumUseResp,
     // DevValidResp,
 }
 
+// INIT_REQ message
 #[derive(Serialize, Deserialize, Debug)]
 pub struct InitReq {
     #[serde(rename = "type")]
@@ -82,12 +89,103 @@ pub struct InitReq {
     pub other: Option<HashMap<String, Value>>,
 }
 
+// INIT_RESP message
+#[derive(Serialize, Deserialize, Debug)]
+pub struct InitResp {
+    #[serde(rename = "type")]
+    pub mtype: String,
+    pub version: String,
+
+    #[serde(rename = "rulesetInfos")]
+    pub ruleset_infos: Vec<RulesetInfo>, // REQUIRED for INIT_RESP
+
+    #[serde(rename = "databaseChange")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub database_change: Option<DbUpdateSpec>, // OPTIONAL
+
+    #[serde(flatten)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub other: Option<HashMap<String, Value>>, // OPTIONAL
+}
+
+// REGISTRATION_REQ message
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RegistrationReq {
+    #[serde(rename = "type")]
+    pub mtype: String,
+    pub version: String,
+
+    #[serde(rename = "deviceDesc")]
+    pub device_desc: DeviceDescriptor, // REQUIRED
+    pub location: GeoLocation, // REQUIRED
+
+    #[serde(rename = "deviceOwner")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub device_owner: Option<DeviceOwner>, // OPTIONAL
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub antenna: Option<AntennaCharacteristics>, // OPTIONAL
+
+    #[serde(flatten)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub other: Option<HashMap<String, Value>>, // OPTIONAL
+}
+
+impl RegistrationReq {
+    pub fn new() -> Self {
+        Self {
+            mtype: Message::RegistrationReq.to_string(),
+            version: PAWS_VERSION.to_string(),
+            device_desc: DeviceDescriptor::new("ncc"),
+            location: GeoLocation::new(6.45, 3.75),
+            device_owner: None,
+            antenna: None,
+            other: None
+        }
+    }
+}
+
+// REGISTRATION_RESP message
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RegistrationResp {
+    #[serde(rename = "type")]
+    pub mtype: String,
+    pub version: String,
+
+    #[serde(rename = "rulesetInfos")]
+    pub ruleset_infos: Vec<RulesetInfo>, // REQUIRED
+
+    #[serde(rename = "databaseChange")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub database_change: Option<DbUpdateSpec>, // OPTIONAL
+
+    #[serde(flatten)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub other: Option<HashMap<String, Value>>, // OPTIONAL
+}
+
+impl RegistrationResp {
+    pub fn new() -> Self {
+        // Fix this later. rulesetinfos should be retrieved from the DB, not hardcoded
+        let ruleset_infos = String::from("NccTvBandWhiteSpace-2019");
+        Self {
+            mtype: Message::RegistrationResp.to_string(),
+            version: PAWS_VERSION.to_string(),
+            ruleset_infos: vec![RulesetInfo::new(ruleset_infos)],
+            database_change: None,
+            other: None
+        }
+    }
+}
+
 impl InitReq {
     pub fn new() -> Self {
         Self {
             mtype: Message::InitReq.to_string(),
             version: PAWS_VERSION.to_string(),
             device_desc: DeviceDescriptor::new("ncc"),
+
+            // TODO: Get location from GPS module or from configuration file
             location: GeoLocation::new(6.8269, 3.6228),
             other: None,
         }
@@ -104,6 +202,24 @@ impl InitReq {
                 ..
             }) => (latitude, longitude),
             _ => (0.0, 0.0),
+        }
+    }
+
+    pub fn mtype(&self) -> String {
+        self.mtype.clone()
+    }
+}
+
+impl InitResp {
+    pub fn new(ruleset_id: String) -> Self {
+        Self {
+            mtype: Message::InitResp.to_string(),
+            version: PAWS_VERSION.to_string(),
+
+            // TODO: Use rule_set_id in DeviceDescriptor to determine RulesetInfo
+            ruleset_infos: vec![RulesetInfo::new(ruleset_id)],
+            database_change: None,
+            other: None,
         }
     }
 }
@@ -125,13 +241,30 @@ pub struct Request {
 
 impl Request {
     // Creates a new PAWS Request
-    pub fn new() -> Self {
-        Self {
+    pub fn new(method: Method) -> Self {
+
+       // let id = Uuid::new_v4()?;
+        match method {
+            Method::Init => Self {
+            jsonrpc: JSON_RPC_VERSION.to_string(),
+            method: Method::Init.to_string(),
+            params: RequestParams::Init(InitReq::new()),
+            id: String::from("xxx"),
+        },
+        Method::Register => Self {
+            jsonrpc: JSON_RPC_VERSION.to_string(),
+            method: Method::Register.to_string(),
+            params: RequestParams::Register(RegistrationReq::new()),
+            id: String::from("xxx"),
+        },
+        _ => Self {
             jsonrpc: JSON_RPC_VERSION.to_string(),
             method: Method::Init.to_string(),
             params: RequestParams::Init(InitReq::new()),
             id: String::from("xxx"),
         }
+        }
+        
     }
 
     // Revisit this implementation
@@ -151,9 +284,24 @@ impl Request {
         }
     }
 
+    pub fn method(&self) -> Option<Method> {
+        match self.method.as_str() {
+            "spectrum.paws.init" => Some(Method::Init),
+            "spectrum.paws.register" => Some(Method::Register),
+            _ => None
+        }
+    }
+
+    pub fn mtype(&self) -> String {
+        match &self.params {
+            RequestParams::Init(init_req) => init_req.mtype(),
+            _ => "".to_string(),
+        }
+    }
+
     pub fn location(&self) -> (Float, Float) {
         match &self.params {
-            RequestParams::Init(req) => req.location(),
+            RequestParams::Init(init_req) => init_req.location(),
             _ => (0.0, 0.0),
         }
     }
@@ -186,35 +334,3 @@ impl Response {
     }
 }
 
-// PAWS `INIT_RESP` message
-#[derive(Serialize, Deserialize, Debug)]
-pub struct InitResp {
-    #[serde(rename = "type")]
-    pub mtype: String,
-    pub version: String,
-
-    #[serde(rename = "rulesetInfos")]
-    pub ruleset_infos: Vec<RulesetInfo>, // REQUIRED for INIT_RESP
-
-    #[serde(rename = "databaseChange")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub database_change: Option<DbUpdateSpec>, // OPTIONAL
-
-    #[serde(flatten)]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub other: Option<HashMap<String, Value>>, // OPTIONAL
-}
-
-impl InitResp {
-    pub fn new(ruleset_id: String) -> Self {
-        Self {
-            mtype: Message::InitResp.to_string(),
-            version: PAWS_VERSION.to_string(),
-
-            // TODO: Use rule_set_id in DeviceDescriptor to determine RulesetInfo
-            ruleset_infos: vec![RulesetInfo::new(ruleset_id)],
-            database_change: None,
-            other: None,
-        }
-    }
-}
