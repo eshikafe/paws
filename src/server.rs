@@ -91,9 +91,9 @@ async fn main() {
 
 async fn get_paws_version(addr: Option<SocketAddr>) -> Result<impl warp::Reply, warp::Rejection> {
     let src_addr = addr
-                .map(|socket_addr| socket_addr.ip().to_string())
-                .unwrap_or_else(|| "Unknown".into());
-    info!("Received 'GET /version' request from {}",src_addr);
+        .map(|socket_addr| socket_addr.ip().to_string())
+        .unwrap_or_else(|| "Unknown".into());
+    info!("Received 'GET /version' request from {}", src_addr);
     let mut result = HashMap::new();
     result.insert(String::from("pawsVersion"), json!(PAWS_VERSION));
     Ok(warp::reply::json(&result))
@@ -106,10 +106,13 @@ async fn home() -> Result<impl warp::Reply, warp::Rejection> {
 }
 
 //  A PAWS request message is carried in the body of an HTTP POST request
-async fn paws_init(addr: Option<SocketAddr>, req: Request) -> Result<impl warp::Reply, warp::Rejection> {
+async fn paws_init(
+    addr: Option<SocketAddr>,
+    req: Request,
+) -> Result<impl warp::Reply, warp::Rejection> {
     let src_addr = addr
-                .map(|socket_addr| socket_addr.ip().to_string())
-                .unwrap_or_else(|| "Unknown".into());
+        .map(|socket_addr| socket_addr.ip().to_string())
+        .unwrap_or_else(|| "Unknown".into());
     if let Some(Method::Init) = req.method() {
         info!("Received 'POST /init' request from {}", src_addr);
         let msg_type = req.mtype();
@@ -129,12 +132,18 @@ async fn paws_init(addr: Option<SocketAddr>, req: Request) -> Result<impl warp::
     }
 }
 
-async fn paws_register(addr: Option<SocketAddr>, req: Request) -> Result<impl warp::Reply, warp::Rejection> {
+async fn paws_register(
+    addr: Option<SocketAddr>,
+    req: Request,
+) -> Result<impl warp::Reply, warp::Rejection> {
     let src_addr = addr
-                .map(|socket_addr| socket_addr.ip().to_string())
-                .unwrap_or_else(|| "Unknown".into());
+        .map(|socket_addr| socket_addr.ip().to_string())
+        .unwrap_or_else(|| "Unknown".into());
     if let Some(Method::Register) = req.method() {
-        info!("Received 'POST /register' request received from {}", src_addr);
+        info!(
+            "Received 'POST /register' request received from {}",
+            src_addr
+        );
         let msg_type = req.mtype();
         if msg_type != "REGISTRATION_REQ".to_string() {
             let err = ErrorResponse::new(ErrorCode::InvalidValue);
@@ -147,7 +156,11 @@ async fn paws_register(addr: Option<SocketAddr>, req: Request) -> Result<impl wa
         Ok(warp::reply::json(&n))
     } else {
         let err = ErrorResponse::new(ErrorCode::NotRegistered);
-        error!("Error in 'POST /register' request received from {} {:?}",src_addr, err.error());
+        error!(
+            "Error in 'POST /register' request received from {} {:?}",
+            src_addr,
+            err.error()
+        );
         Ok(warp::reply::json(&err))
     }
 }
