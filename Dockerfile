@@ -5,7 +5,7 @@ WORKDIR /pawslib
 COPY . .
 RUN apt-get update && apt-get install -y pkg-config libssl-dev
 
-RUN cargo build --release --bin server
+RUN cargo build --release --bin paws_server
 
 
 FROM debian:buster-slim
@@ -24,11 +24,11 @@ RUN groupadd $APP_USER \
     && useradd -g $APP_USER $APP_USER \
     && mkdir -p ${APP}
 
-COPY --from=builder /pawslib/target/release/server ${APP}/paws-server
+COPY --from=builder /pawslib/target/release/paws_server ${APP}/paws_server
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 
 USER $APP_USER
 WORKDIR ${APP}
 
-CMD ["./paws-server"]
+CMD ["./paws_server"]
