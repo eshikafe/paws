@@ -24,9 +24,9 @@ async fn main() {
             let module = record.module_path().unwrap();
             writeln!(
                 buf,
-                "{} [{}] [{}] {}",
-                ts,
+                "level={} ts={} module={} msg={}",
                 ls.value(record.level()),
+                ts,
                 module,
                 record.args()
             )
