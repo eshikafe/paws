@@ -17,14 +17,14 @@ The API allows you to interact with the PAWS protocol.
 - Clone the repo: `git clone https://github.com/eshikafe/paws.git`
 - Change directory: `cd paws`
 - Start the PAWS server with `cargo run --bin server`
-- Or, to create a binary/executable, run: `cargo build --release --bin server`. It is same command on Windows, Linux and MacOS.
+- Or, to create a binary/executable, run: `cargo build --release --bin paws-server`. It is same command on Windows, Linux and MacOS.
   - On Windows, the binary file `server.exe` will be created in the `target\release` folder.
-  - Execute the binary by running: `.\target\release\server.exe`.
+  - Execute the binary by running: `.\target\release\paws-server.exe`.
 - Access the API via URL `http://localhost:3030/v1beta/paws`
 
 ## How to create a binary
 
-- While in the `paws` folder, run `cargo build --release --bin server`
+- While in the `paws` folder, run `cargo build --release --bin paws-server`
 
 ## Endpoints
 
