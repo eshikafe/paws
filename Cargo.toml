@@ -10,11 +10,11 @@ name = "paws"
 path = "src/lib.rs"
 
 [[bin]]
-name = "paws_server"
+name = "paws-server"
 path = "src/server.rs"
 
 [[bin]]
-name = "paws_client"
+name = "paws-client"
 path = "src/client.rs"
 
 [dependencies]
