@@ -115,7 +115,7 @@ impl DeviceDescriptor {
     pub fn new(regulator: &str) -> Self {
         //let regulatory_domains = vec!["ncc", "fcc", "etsi", "paws", "ofcom"];
         let mut other_params = HashMap::new();
-        let mut rule_set_id = String::new();
+        let rule_set_id: String;
 
         match regulator {
             "ncc" => {
