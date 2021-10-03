@@ -21,10 +21,10 @@ async fn main() {
             let ts = buf.timestamp();
             let mut ls = buf.style();
             ls.set_color(Color::Green);
-            let module = record.module_path().unwrap();
+            let module = record.target(); 
             writeln!(
                 buf,
-                "level={} ts={} module={} msg={}",
+                "level={} ts={} module={} {}",
                 ls.value(record.level()),
                 ts,
                 module,
@@ -44,17 +44,19 @@ async fn main() {
     //   such as 405 (method not allowed).
 
     //    PAWS APIs
-    //    localhost:3030/v1beta/paws
+    //    localhost:3030/api/v1beta/paws
 
     let index = warp::get()
+        .and(warp::path("api"))
         .and(warp::path("v1beta"))
         .and(warp::path("paws"))
         .and(warp::path::end())
         .and_then(home);
 
     // GET /version
-    // curl -GET localhost:3030/v1beta/paws/version
+    // curl -GET localhost:3030/api/v1beta/paws/version
     let get_version = warp::get()
+        .and(warp::path("api"))
         .and(warp::path("v1beta"))
         .and(warp::path("paws"))
         .and(warp::path("version"))
@@ -62,9 +64,11 @@ async fn main() {
         .and(warp::addr::remote())
         .and_then(get_paws_version);
 
+
+    // A PAWS request message is carried in the body of an HTTP POST request
     // POST /init
-    // Check the README file for an example
     let post_init_proc = warp::post()
+        .and(warp::path("api"))
         .and(warp::path("v1beta"))
         .and(warp::path("paws"))
         .and(warp::path("init"))
@@ -76,6 +80,7 @@ async fn main() {
     // POST /register
     // Check the README file for an example
     let post_register = warp::post()
+        .and(warp::path("api"))
         .and(warp::path("v1beta"))
         .and(warp::path("paws"))
         .and(warp::path("register"))
@@ -89,11 +94,12 @@ async fn main() {
     warp::serve(routes).run(([0, 0, 0, 0], port)).await;
 }
 
+// Handlers
 async fn get_paws_version(addr: Option<SocketAddr>) -> Result<impl warp::Reply, warp::Rejection> {
     let src_addr = addr
         .map(|socket_addr| socket_addr.ip().to_string())
         .unwrap_or_else(|| "Unknown".into());
-    info!("Received 'GET /version' request from {}", src_addr);
+    info!("msg=\"GET /api/v1beta/paws/version\" src_ip={}", src_addr);
     let mut result = HashMap::new();
     result.insert(String::from("pawsVersion"), json!(PAWS_VERSION));
     Ok(warp::reply::json(&result))
@@ -105,7 +111,6 @@ async fn home() -> Result<impl warp::Reply, warp::Rejection> {
     Ok(warp::reply::json(&result))
 }
 
-//  A PAWS request message is carried in the body of an HTTP POST request
 async fn paws_init(
     addr: Option<SocketAddr>,
     req: Request,
@@ -114,11 +119,11 @@ async fn paws_init(
         .map(|socket_addr| socket_addr.ip().to_string())
         .unwrap_or_else(|| "Unknown".into());
     if let Some(Method::Init) = req.method() {
-        info!("Received 'POST /init' request from {}", src_addr);
+        info!("msg=\"POST /api/v1beta/paws/init\" src_ip={}", src_addr);
         let msg_type = req.mtype();
         if msg_type != "INIT_REQ".to_string() {
             let err = ErrorResponse::new(ErrorCode::InvalidValue);
-            error!("Error in 'POST /init' request received from {} {:?}. Expected INIT_REQ as message type but found {}",src_addr, err.error(), msg_type);
+            error!("msg=\"POST /api/v1beta/paws/init\" err_msg=\"{:?} Expected INIT_REQ message but found {}\" src_ip={}",err.error(), msg_type, src_addr);
             return Ok(warp::reply::json(&err));
         }
         // Get ruleset from Request
@@ -127,7 +132,7 @@ async fn paws_init(
         Ok(warp::reply::json(&res))
     } else {
         let err = ErrorResponse::new(ErrorCode::InvalidValue);
-        error!("Error in 'POST /init' request received from {} {:?}. Expected 'spectrum.paws.init' as method but found {}",src_addr, err.error(), req.method);
+        error!("msg=\"POST /api/v1beta/paws/init\" err_msg=\"{:?} Expected method:spectrum.paws.init but found {}\" src_ip={}",err.error(), req.method, src_addr);
         Ok(warp::reply::json(&err))
     }
 }
@@ -140,14 +145,11 @@ async fn paws_register(
         .map(|socket_addr| socket_addr.ip().to_string())
         .unwrap_or_else(|| "Unknown".into());
     if let Some(Method::Register) = req.method() {
-        info!(
-            "Received 'POST /register' request received from {}",
-            src_addr
-        );
+        info!("msg=\"POST /api/v1beta/paws/register\" src_ip={}",src_addr);
         let msg_type = req.mtype();
         if msg_type != "REGISTRATION_REQ".to_string() {
             let err = ErrorResponse::new(ErrorCode::InvalidValue);
-            error!("Error in 'POST /init' request received from {} {:?}. Expected REGISTRATION_REQ as message type but found {}",src_addr, err.error(), msg_type);
+            error!("msg=\"POST /api/v1beta/paws/register\" err_msg=\"{:?}: Expected REGISTRATION_REQ message type but found '{}'\" src_ip={}",err.error(), msg_type, src_addr);
             return Ok(warp::reply::json(&err));
         }
         //let res = Response::new();
@@ -156,11 +158,7 @@ async fn paws_register(
         Ok(warp::reply::json(&n))
     } else {
         let err = ErrorResponse::new(ErrorCode::NotRegistered);
-        error!(
-            "Error in 'POST /register' request received from {} {:?}",
-            src_addr,
-            err.error()
-        );
+        error!("msg=\"POST /api/v1beta/paws/register\" err_msg=\"{:?}\" src_ip={}",err.error(), src_addr);
         Ok(warp::reply::json(&err))
     }
 }
