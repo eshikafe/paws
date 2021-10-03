@@ -20,7 +20,7 @@ The API allows you to interact with the PAWS protocol.
 - Or, to create a binary/executable, run: `cargo build --release --bin paws-server`. It is same command on Windows, Linux and MacOS.
   - On Windows, the binary file `server.exe` will be created in the `target\release` folder.
   - Execute the binary by running: `.\target\release\paws-server.exe`.
-- Access the API via URL `http://localhost:3030/v1beta/paws`
+- Access the API via URL `http://localhost:3030/api/v1beta/paws`
 
 ## How to create a binary
 
@@ -37,7 +37,7 @@ Returns the PAWS protocol version.
 Example: Using curl. For simplicity just install and use [Postman](https://www.postman.com/) to test the API.
 
 ```
-curl --request GET localhost:3030/v1beta/paws/version
+curl --request GET localhost:3030/api/v1beta/paws/version
 ```
 
 Response:
@@ -58,7 +58,7 @@ Starts the PAWS `Initialization` request procedure. It allows you to send the PA
 Example
 
 ```
-curl --request POST localhost:3030/v1beta/paws/init \
+curl --request POST localhost:3030/api/v1beta/paws/init \
 --header 'Content-Type: application/json' \
 --data-raw '{
 "jsonrpc": "2.0",
