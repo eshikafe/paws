@@ -1,5 +1,5 @@
 // Copyright (c) 2021 TVWS-Project
-
+#![allow(unused)]
 use redis::Commands;
 
 pub fn get_ruleset(rule_set: &str) -> String {
