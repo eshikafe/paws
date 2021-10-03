@@ -4,11 +4,8 @@
 // If the Database responds to a PAWS request message with an error, it
 // MUST include an Error element.
 
-use env_logger;
-use log::error;
 use serde::Deserialize;
 use serde::Serialize;
-use std::fmt;
 
 use crate::types::Int;
 use crate::version::*;
