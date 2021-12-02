@@ -1,8 +1,9 @@
-// copyright 2021 Austin Aigbe
+// Copyright (c) 2021 TVWS-Project
+
 package paws
 
-// PAWS Protocol Parameters (RFC 7545)
-// All parameter names are case sensitive.
+const JSONVersion string = "2.0"
+const PAWSVersion string = "1.0"
 
 type float float64
 
