@@ -10,11 +10,11 @@ name = "paws"
 path = "src/lib.rs"
 
 [[bin]]
-name = "paws-server"
+name = "server"
 path = "src/server.rs"
 
 [[bin]]
-name = "paws-client"
+name = "client"
 path = "src/client.rs"
 
 [dependencies]
@@ -28,6 +28,6 @@ tokio = { version = "1", features = ["full"] }
 warp = "0.3.1"
 redis = { version = "0.20.2", features=["tls"]}
 mac_address = "1.1.1"
-# mongodb = "2.0.0"
+mongodb = "2.0.0"
 env_logger = "0.8.4"
 log = "0.4.14"
