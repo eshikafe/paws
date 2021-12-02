@@ -21,7 +21,7 @@ async fn main() {
             let ts = buf.timestamp();
             let mut ls = buf.style();
             ls.set_color(Color::Green);
-            let module = record.target(); 
+            let module = record.target();
             writeln!(
                 buf,
                 "level={} ts={} module={} {}",
@@ -55,7 +55,7 @@ async fn main() {
 
     // GET /version
     // curl -GET localhost:3030/api/v1beta/paws/version
-    let get_version = warp::get()
+    let paws_version = warp::get()
         .and(warp::path("api"))
         .and(warp::path("v1beta"))
         .and(warp::path("paws"))
@@ -64,10 +64,9 @@ async fn main() {
         .and(warp::addr::remote())
         .and_then(get_paws_version);
 
-
     // A PAWS request message is carried in the body of an HTTP POST request
     // POST /init
-    let post_init_proc = warp::post()
+    let paws_init = warp::post()
         .and(warp::path("api"))
         .and(warp::path("v1beta"))
         .and(warp::path("paws"))
@@ -75,11 +74,11 @@ async fn main() {
         .and(warp::path::end())
         .and(warp::addr::remote())
         .and(json_body())
-        .and_then(paws_init);
+        .and_then(init_handler);
 
     // POST /register
     // Check the README file for an example
-    let post_register = warp::post()
+    let paws_register = warp::post()
         .and(warp::path("api"))
         .and(warp::path("v1beta"))
         .and(warp::path("paws"))
@@ -87,9 +86,9 @@ async fn main() {
         .and(warp::path::end())
         .and(warp::addr::remote())
         .and(json_body())
-        .and_then(paws_register);
+        .and_then(register_handler);
 
-    let routes = get_version.or(post_init_proc).or(index).or(post_register);
+    let routes = paws_version.or(paws_init).or(index).or(paws_register);
 
     warp::serve(routes).run(([0, 0, 0, 0], port)).await;
 }
@@ -111,7 +110,7 @@ async fn home() -> Result<impl warp::Reply, warp::Rejection> {
     Ok(warp::reply::json(&result))
 }
 
-async fn paws_init(
+async fn init_handler(
     addr: Option<SocketAddr>,
     req: Request,
 ) -> Result<impl warp::Reply, warp::Rejection> {
@@ -137,7 +136,7 @@ async fn paws_init(
     }
 }
 
-async fn paws_register(
+async fn register_handler(
     addr: Option<SocketAddr>,
     req: Request,
 ) -> Result<impl warp::Reply, warp::Rejection> {
@@ -145,7 +144,7 @@ async fn paws_register(
         .map(|socket_addr| socket_addr.ip().to_string())
         .unwrap_or_else(|| "Unknown".into());
     if let Some(Method::Register) = req.method() {
-        info!("msg=\"POST /api/v1beta/paws/register\" src_ip={}",src_addr);
+        info!("msg=\"POST /api/v1beta/paws/register\" src_ip={}", src_addr);
         let msg_type = req.mtype();
         if msg_type != "REGISTRATION_REQ".to_string() {
             let err = ErrorResponse::new(ErrorCode::InvalidValue);
@@ -158,7 +157,11 @@ async fn paws_register(
         Ok(warp::reply::json(&n))
     } else {
         let err = ErrorResponse::new(ErrorCode::NotRegistered);
-        error!("msg=\"POST /api/v1beta/paws/register\" err_msg=\"{:?}\" src_ip={}",err.error(), src_addr);
+        error!(
+            "msg=\"POST /api/v1beta/paws/register\" err_msg=\"{:?}\" src_ip={}",
+            err.error(),
+            src_addr
+        );
         Ok(warp::reply::json(&err))
     }
 }
