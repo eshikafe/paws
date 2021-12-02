@@ -2,42 +2,7 @@
 
 package paws
 
-// PAWS Request
-// The JSON-RPC Request for PAWS has the following form:
-//    {
-//      "jsonrpc": "2.0",
-//      "method": "spectrum.paws.methodName",
-//      "params": <PAWS_REQ>,
-//      "id": "idString"
-//    }
-
-type PAWSHandler struct {
-	request  Request
-	response Response
-}
-
-type Request struct {
-	Jsonrpc string `json:"jsonrpc"`
-	Method  string `json:"method"`
-	//ApiVersion string  `json:"apiVersion"` // "v1beta"
-	Params InitReq `json:"params"`
-	Id     string  `json:"id"`
-}
-
-// PAWS Response
-// The non-error JSON-RPC Response for PAWS has the following form:
-// {
-//   "jsonrpc": "2.0",
-//   "result": <PAWS_RESP>,
-//   "id": "idString"
-// }
-type Response struct {
-	Jsonrpc string   `json:"jsonrpc"`
-	Result  InitResp `json:"result"`
-	Id      string   `json:"id"`
-}
-
-// Method Name: spectrum.paws.init                                                       |
+// spectrum.paws.init                                                       |
 //    Request: INIT_REQ                                                        |
 //    Response: INIT_RESP
 
@@ -45,8 +10,8 @@ type Response struct {
 type InitReq struct {
 	Type       string           `json:"type"`
 	Version    string           `json:"version"`
-	DeviceDesc DeviceDescriptor `json:"deviceDesc"`         // REQUIRED
-	Location   GeoLocation      `json:"location,omitempty"` // REQUIRED
+	DeviceDesc DeviceDescriptor `json:"deviceDesc"` // REQUIRED
+	Location   GeoLocation      `json:"location"`   // REQUIRED
 	//Other Any  // OPTIONAL
 }
 
@@ -56,41 +21,62 @@ type InitResp struct {
 	Version        string        `json:"version"`
 	RulesetInfos   []RulesetInfo `json:"rulesetInfos"`             // REQUIRED
 	DatabaseChange *DbUpdateSpec `json:"databaseChange,omitempty"` // OPTIONAL FIX THIS
-	//other: Any,
+	//	other       *any
 }
 
-func (res *InitReq) init() InitReq {
-	res.Type = "INIT_REQ"
-	res.Version = PAWSVersion
-	res.DeviceDesc.SerialNumber = "XXX"
-	res.DeviceDesc.ManufacturerId = "YYY"
-	res.DeviceDesc.ModelId = "ZZ"
-	res.DeviceDesc.RulesetIds = []string{"NccTvBandWhiteSpace-2010"}
+// spectrum.paws.register
+//    REGISTRATION_REQ
+//    REGISTRATION_RESP
 
-	// TODO: get Lat/Long from GPS module or node config
-	res.Location.Point.Center.Latitude = 6.5
-	res.Location.Point.Center.Longitude = 3.35
-	return *res
+type RegistrationReq struct {
+	Type        string                 `json:"type"`
+	Version     string                 `json:"version"`
+	DeviceDesc  DeviceDescriptor       `json:"deviceDesc"`
+	Location    GeoLocation            `json:"location"`
+	DeviceOwner DeviceOwner            `json:"deviceOwner,omitempty"`
+	Antenna     AntennaCharacteristics `json:"antenna,omitempty"`
+	//	other       *any
 }
 
-func (msg *Request) Init() Request {
-	var init_req InitReq
-	msg.Jsonrpc = JSONVersion
-	msg.Method = "spectrum.paws.init"
-	msg.Params = init_req.init()
-	msg.Id = "xxxxxx"
-	return *msg
+type RegistrationResp struct {
+	Type           string        `json:"type"`
+	Version        string        `json:"version"`
+	RulesetInfos   []RulesetInfo `json:"rulesetInfos"`
+	DatabaseChange DbUpdateSpec  `json:"databaseChange,omitempty"`
 }
 
-func (msg *Response) Init() Response {
-	msg.Jsonrpc = JSONVersion
-	msg.Result.Type = "INIT_RESP"
-	msg.Result.Version = PAWSVersion
-	msg.Result.RulesetInfos = []RulesetInfo{{
-		Authority:         "ng",
-		RulesetId:         "NccTvBandWhiteSpace-2010",
-		MaxLocationChange: 100,
-		MaxPollingSecs:    86400}}
-	msg.Id = "xxxxxx"
-	return *msg
+// spectrum.paws.getSpectrum
+//    AVAIL_SPECTRUM_REQ
+//    AVAIL_SPECTRUM_RESP
+
+type AvailSpectrumReq struct {
+	Type                 string                 `json:"type"`
+	Version              string                 `json:"version"`
+	DeviceDesc           DeviceDescriptor       `json:"deviceDesc"`
+	Location             GeoLocation            `json:"location"`
+	Owner                DeviceOwner            `json:"owner"`
+	Antenna              AntennaCharacteristics `json:"antenna,omitempty"`
+	Capabilities         DeviceCapabilities     `json:"capabilities,omitempty"`
+	MsterDeviceDesc      DeviceDescriptor       `json:"masterDeviceDesc,omitempty"`
+	MasterDeviceLocation GeoLocation            `json:"masterDeviceLocation,omitempty"`
+	RequestType          string                 `json:"requestType,omitempty"`
+	// other *any
+}
+
+type AvailSpectrumResp struct {
+	Type           string           `json:"type"` // AVAIL_SPECTRUM_RESP
+	Version        string           `json:"version"`
+	Timestamp      string           `json:"timestamp"` // UTC YYYY-MM-DDThh:mm:ssZ
+	DeviceDesc     DeviceDescriptor `json:"deviceDesc"`
+	SpectrumSpecs  []SpectrumSpec   `json:"spectrumSpecs"`
+	DatabaseChange DbUpdateSpec     `json:"databaseChange,omitempty"`
+	// other *any
+}
+
+type AvailSpectrumBatchReq struct {
+	Type       string           `json:"type"` // AVAIL_SPECTRUM_BATCH_REQ
+	Version    string           `json:"version"`
+	DeviceDesc DeviceDescriptor `json:"deviceDesc"`
+	Locations  []GeoLocation    `json:"locations"`
+	Owner      DeviceOwner      `json:"owner,omitempty"`
 }
