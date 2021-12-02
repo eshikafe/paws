@@ -1,9 +1,9 @@
 // Copyright (c) 2021 TVWS-Project
 
-use redis;
-
 use crate::types::*;
 use mongodb::{options::ClientOptions, Client};
+use redis;
+use std::error::Error;
 
 pub fn get_ruleset(rule_set: &str) -> String {
     let mut conn = redis_connect();
@@ -23,14 +23,13 @@ fn redis_connect() -> redis::Connection {
 }
 
 // Spectrum database
-// Channel number: 2,7,9 
+// Channel number: 2,7,9
 // Frequency range (MHz) 470-476, 482-488
 // Allowable antenna height (meters AGL): 30, 29.9
 // Noise floor (dBm)
 
-
 // Redis docker container must be running
-fn mongodb_connect() {
+async fn mongodb_connect() -> mongodb::error::Result<()> {
     // Parse a connection string into an options struct.
     let mut client_options = ClientOptions::parse("mongodb://localhost:27017").await?;
 
@@ -44,6 +43,7 @@ fn mongodb_connect() {
     for db_name in client.list_database_names(None, None).await? {
         println!("{}", db_name);
     }
+    Ok(())
 }
 
 // TODO
@@ -52,6 +52,6 @@ fn mongodb_connect() {
 // Use reserve geocoding: convert coordinates to country
 // Reference: https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon
 
-pub fn reverse_geocode(latitude: Float, longitude: Float) -> Result<String, Error> {
-    retrun "ng".to_string();
+pub fn reverse_geocode(_latitude: Float, _longitude: Float) -> Result<String, Box<dyn Error>> {
+    Ok("ng".to_string())
 }
