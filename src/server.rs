@@ -2,7 +2,7 @@
 // PAWS - Protocol to Access White Space Database
 // Compliant with RFC 7545
 
-use paws::errors::*;
+use paws::error::*;
 use paws::message::*;
 use paws::version::*;
 

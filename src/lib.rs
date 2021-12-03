@@ -3,7 +3,7 @@
 // Compliant with RFC 7545
 
 pub mod db;
-pub mod errors;
+pub mod error;
 pub mod message;
 pub mod parameters;
 pub mod types;
@@ -12,7 +12,7 @@ pub mod version;
 #[cfg(test)]
 mod test_cases {
     use super::db as rc;
-    use super::errors::*;
+    use super::error::*;
     use super::message::*;
     use super::parameters::get_mac_addr;
     #[test]
