@@ -5,8 +5,9 @@ services:
     ports:
       - 6379:6379
     command: ["redis-server"]
-  spectrumdb:
-    image: mongo
-    volumes:
-      - ~/spectrumdb:/data/db
-    ports: -27017:27017
+  # spectrumdb:
+  #   image: mongo
+  #   volumes:
+  #     - ~/spectrumdb:/data/db
+  #   ports: 
+  #     - 27017:27017

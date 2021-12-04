@@ -5,17 +5,25 @@ use mongodb::{options::ClientOptions, Client};
 use redis;
 use std::error::Error;
 
-pub fn get_ruleset(rule_set: &str) -> String {
-    let mut conn = redis_connect();
+pub fn get_ruleset(conn: &mut redis::Connection, rule_set: &str) -> String {
+    // let mut conn = redis_connect();
     let result: String = redis::cmd("GET")
         .arg(rule_set)
-        .query(&mut conn)
+        .query(conn)
         .expect("Failed to GET ruleset");
     result
 }
 
+pub fn set_ruleset(conn: &mut redis::Connection, key: &str, value: &str) {
+    let _: () = redis::cmd("SET")
+        .arg(key)
+        .arg(value)
+        .query(conn)
+        .expect("failed to execute SET for key");
+}
+
 // Redis docker container must be running
-fn redis_connect() -> redis::Connection {
+pub fn redis_connect() -> redis::Connection {
     redis::Client::open("redis://localhost:6379")
         .expect("Redis DB connection error")
         .get_connection()

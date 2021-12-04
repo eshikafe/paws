@@ -11,19 +11,16 @@ pub mod version;
 
 #[cfg(test)]
 mod test_cases {
-    use super::db as rc;
+    use super::db;
     use super::error::*;
     use super::message::*;
     use super::parameters::get_mac_addr;
     #[test]
-    #[ignore]
     fn test_redis_db() {
-        let r1 = rc::get_ruleset("nccId");
-        let r2 = rc::get_ruleset("fccId");
-        assert_eq!("123", r1);
-        assert_eq!("12345", r2);
-        println!("value for nccId = {}", r1);
-        println!("value for fccId = {}", r2);
+        let mut redis = db::redis_connect();
+        db::set_ruleset(&mut redis, "nccId","12345");
+        let r = db::get_ruleset(&mut redis, "nccId");
+        assert_eq!("12345", r);
     }
     #[test]
     #[ignore]
