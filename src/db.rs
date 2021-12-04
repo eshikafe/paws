@@ -28,7 +28,7 @@ fn redis_connect() -> redis::Connection {
 // Allowable antenna height (meters AGL): 30, 29.9
 // Noise floor (dBm)
 
-// Redis docker container must be running
+// Mongodb docker container must be running
 async fn mongodb_connect() -> mongodb::error::Result<()> {
     // Parse a connection string into an options struct.
     let mut client_options = ClientOptions::parse("mongodb://localhost:27017").await?;
