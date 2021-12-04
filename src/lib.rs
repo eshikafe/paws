@@ -18,7 +18,7 @@ mod test_cases {
     #[test]
     fn test_redis_db() {
         let mut redis = db::redis_connect();
-        db::set_ruleset(&mut redis, "nccId","12345");
+        db::set_ruleset(&mut redis, "nccId", "12345");
         let r = db::get_ruleset(&mut redis, "nccId");
         assert_eq!("12345", r);
     }
