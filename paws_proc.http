@@ -1,4 +1,4 @@
-POST http://127.0.0.1:3030
+POST http://127.0.0.1:3030/api/v1beta/paws/init
 
 {
 "jsonrpc": "2.0",
