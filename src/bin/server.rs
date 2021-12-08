@@ -5,38 +5,19 @@
 use paws::error::*;
 use paws::message::*;
 use paws::version::*;
-
-use env_logger::{fmt::Color, Target, WriteStyle};
-use log::{error, info, LevelFilter};
 use serde_json::json;
 use std::collections::HashMap;
-use std::io::Write;
 use std::net::SocketAddr;
 use warp::Filter;
+use tracing::{debug, error, info};
+
 
 #[tokio::main]
 async fn main() {
-    env_logger::builder()
-        .format(|buf, record| {
-            let ts = buf.timestamp();
-            let mut ls = buf.style();
-            ls.set_color(Color::Green);
-            let module = record.target();
-            writeln!(
-                buf,
-                "level={} ts={} module={} {}",
-                ls.value(record.level()),
-                ts,
-                module,
-                record.args()
-            )
-        })
-        .filter(None, LevelFilter::Info)
-        .write_style(WriteStyle::Auto)
-        .target(Target::Stdout)
-        .init();
+    tracing_subscriber::fmt::try_init().unwrap();
     let port = 3030;
-    info!("Starting PAWS server on port {}", port);
+    info!("Starting server on port {}", port);
+    info!("API: localhost:{}/api/v1beta/paws", port);
 
     //   The POST method is the only method REQUIRED for PAWS.
     //   If a Database chooses to support GET, it MUST be an escaped URI.

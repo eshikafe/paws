@@ -1,5 +1,6 @@
-// use hyper::{Body, Method, Request, Uri};
-//use paws::method;
+// Copyright (c) 2021 TVWS-Project
+// PAWS - Protocol to Access White Space Database
+// Compliant with RFC 7545
 
 /// The POST method is the only method REQUIRED for PAWS.
 /// A PAWS request message is carried in the body of an HTTP POST request.

@@ -10,12 +10,12 @@ name = "paws"
 path = "src/lib.rs"
 
 [[bin]]
-name = "server"
-path = "src/server.rs"
+name = "paws-server"
+path = "src/bin/server.rs"
 
 [[bin]]
-name = "client"
-path = "src/client.rs"
+name = "paws-client"
+path = "src/bin/client.rs"
 
 [dependencies]
 serde = { version = "1.0.126", features = ["derive"] }
@@ -29,5 +29,6 @@ warp = "0.3.1"
 redis = { version = "0.20.2", features=["tls"]}
 mac_address = "1.1.1"
 mongodb = "2.0.0"
-env_logger = "0.8.4"
-log = "0.4.14"
+tracing = "0.1.13"
+tracing-futures = { version = "0.2.3" }
+tracing-subscriber = "0.2.2"
