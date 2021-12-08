@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 POST http://127.0.0.1:3030/api/v1beta/paws/init
+=======
+POST http://0.0.0.0:3030/api/v1beta/paws/init
+Content-Type: "application/json"
+>>>>>>> ad6cb0fc6bfaac0f0088cb3d495f12a433a0297f
 
 {
 "jsonrpc": "2.0",
