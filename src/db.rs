@@ -1,9 +1,9 @@
-// Copyright (c) 2021 TVWS-Project
 
 use crate::types::*;
 use mongodb::{options::ClientOptions, Client};
 use redis;
 use std::error::Error;
+use std::env;
 
 pub fn get_ruleset(conn: &mut redis::Connection, rule_set: &str) -> String {
     // let mut conn = redis_connect();

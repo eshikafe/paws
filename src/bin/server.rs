@@ -1,9 +1,10 @@
-// Copyright (c) 2021 TVWS-Project
 // PAWS - Protocol to Access White Space Database
 // Compliant with RFC 7545
 
 use paws::error::*;
-use paws::message::*;
+use paws::method::*;
+use paws::{Request, InitReq, RegistrationReq};
+use paws::{Response, InitResp, RegistrationResp};
 use paws::version::*;
 use serde_json::json;
 use std::collections::HashMap;
@@ -43,7 +44,7 @@ async fn main() {
         .and(warp::path("version"))
         .and(warp::path::end())
         .and(warp::addr::remote())
-        .and_then(get_paws_version);
+        .and_then(version_handler);
 
     // A PAWS request message is carried in the body of an HTTP POST request
     // POST /init
@@ -75,7 +76,7 @@ async fn main() {
 }
 
 // Handlers
-async fn get_paws_version(addr: Option<SocketAddr>) -> Result<impl warp::Reply, warp::Rejection> {
+async fn version_handler(addr: Option<SocketAddr>) -> Result<impl warp::Reply, warp::Rejection> {
     let src_addr = addr
         .map(|socket_addr| socket_addr.ip().to_string())
         .unwrap_or_else(|| "Unknown".into());
@@ -93,7 +94,7 @@ async fn home() -> Result<impl warp::Reply, warp::Rejection> {
 
 async fn init_handler(
     addr: Option<SocketAddr>,
-    req: Request,
+    req: Request<InitReq>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     let src_addr = addr
         .map(|socket_addr| socket_addr.ip().to_string())
@@ -119,7 +120,7 @@ async fn init_handler(
 
 async fn register_handler(
     addr: Option<SocketAddr>,
-    req: Request,
+    req: Request<RegistrationReq>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     let src_addr = addr
         .map(|socket_addr| socket_addr.ip().to_string())

@@ -1,4 +1,3 @@
-// Copyright (c) 2021 TVWS-Project
 // PAWS - Protocol to Access White Space Database
 // Compliant with RFC 7545
 
@@ -9,6 +8,7 @@
 #[tokio::main]
 async fn main() { // -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     println!("PAWS Client");
+    todo!();
 //     let req = Request::builder()
 //         .method(Method::POST)
 //         .uri("http://localhost:3030")

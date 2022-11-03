@@ -1,13 +1,9 @@
 [package]
-name = "pawslib"
+name = "paws"
 description = "Protocol to Access White-Space (PAWS) Databases"
 version = "0.1.0"
-authors = ["TVWS-Project Team"]
+authors = ["Austin Aigbe <eshikafe@gmail.com>"]
 edition = "2018"
-
-[lib]
-name = "paws"
-path = "src/lib.rs"
 
 [[bin]]
 name = "paws-server"

@@ -1,5 +1,3 @@
-// Copyright (c) 2021 TVWS-Project
-//
 // PAWS Error Codes (RFC 7545 section 5.17)
 // If the Database responds to a PAWS request message with an error, it
 // MUST include an Error element.

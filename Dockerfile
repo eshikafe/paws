@@ -1,7 +1,7 @@
 FROM rust:1.55.0-slim-buster as builder
 
-RUN USER=root cargo new --bin pawslib
-WORKDIR /pawslib
+RUN USER=root cargo new --bin paws
+WORKDIR /paws
 COPY . .
 RUN apt-get update && apt-get install -y pkg-config libssl-dev
 
@@ -24,7 +24,7 @@ RUN groupadd $APP_USER \
     && useradd -g $APP_USER $APP_USER \
     && mkdir -p ${APP}
 
-COPY --from=builder /pawslib/target/release/paws-server ${APP}/paws-server
+COPY --from=builder /paws/target/release/paws-server ${APP}/paws-server
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 

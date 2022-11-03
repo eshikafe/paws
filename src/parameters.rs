@@ -1,10 +1,7 @@
-// (c) 2021 TVWS-Project
-
 // PAWS Protocol Parameters (RFC 7545)
 // All parameter names are case sensitive.
 
 use crate::types::{Float, Int};
-
 use mac_address::get_mac_address;
 use serde::Deserialize;
 use serde::Serialize;
