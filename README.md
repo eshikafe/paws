@@ -1,6 +1,6 @@
 # PAWS Protocol
 
-PAWS - Protocol to Access White Space database [RFC 7545]
+PAWS - Protocol to Access White Space database [RFC 7545](https://datatracker.ietf.org/doc/rfc7545/)
 
 ## Prerequisite
 
@@ -40,7 +40,7 @@ Sample Request
 curl --request GET localhost:3030/v1beta/paws/version
 ```
 
-Response:
+Sample Response:
 
 ```
 {
