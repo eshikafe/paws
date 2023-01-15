@@ -2,12 +2,8 @@
 
 PAWS - Protocol to Access White Space database [RFC 7545](https://datatracker.ietf.org/doc/rfc7545/)
 
-## Prerequisite
-
-- Install [Rust](https://www.rust-lang.org/tools/install).
-
 ## Setup
-
+- Install [Rust](https://www.rust-lang.org/tools/install).
 - Clone the repo: `git clone https://github.com/eshikafe/paws.git`
 - Change directory: `cd paws`
 - Development mode: Start the PAWS server with `cargo run --bin paws-server`
