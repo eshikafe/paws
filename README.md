@@ -45,7 +45,7 @@ Sample Response:
 
 ```
 
-### Init
+### Initialization
 
 This endpoint starts the PAWS `Initialization` request procedure. It allows you to send the PAWS `INIT_REQ` message. It returns a PAWS `INIT_RESP` message.
 
