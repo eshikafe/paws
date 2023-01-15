@@ -17,7 +17,7 @@ PAWS - Protocol to Access White Space database [RFC 7545](https://datatracker.ie
 
 ## PAWS API Documentation
 
-API version: v1beta.<br>
+API version: `v1beta`.<br>
 This is the API documentation for the PAWS protocol.
 
 ## Endpoints
