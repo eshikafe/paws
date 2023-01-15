@@ -2,12 +2,6 @@
 
 PAWS - Protocol to Access White Space database [RFC 7545]
 
-## PAWS API
-
-API version: v1beta.
-
-The API allows you to interact with the PAWS protocol.
-
 ## Prerequisite
 
 - Install [Rust](https://www.rust-lang.org/tools/install).
@@ -18,24 +12,32 @@ The API allows you to interact with the PAWS protocol.
 - Change directory: `cd paws`
 - Development mode: Start the PAWS server with `cargo run --bin paws-server`
 - Production mode: Run: `cargo build --release --bin paws-server` and `.\target\release\paws-server.exe`
-- Access the API via URL `http://localhost:3030/api/v1beta/paws`
+- Access the API via URL `http://localhost:3030/v1beta/`
 
 ## How to create a binary
 
-- While in the `paws` folder, run `cargo build --release --bin paws-server`
+- `cd paws`
+- `cargo build --release --bin paws-server`
+
+## PAWS API Documentation
+
+API version: v1beta.<br>
+This is the API documentation for the PAWS protocol.
 
 ## Endpoints
 
 ### Version
 
-GET `/version`
+This endpoint returns the PAWS protocol version.
 
-Returns the PAWS protocol version.
+| Method | Path                 |
+| :----- | :------------------- |
+| `GET`  | `/paws/version`      |
 
-Example: Using curl. For simplicity just install and use [Postman](https://www.postman.com/) to test the API.
+Sample Request
 
 ```
-curl --request GET localhost:3030/api/v1beta/paws/version
+curl --request GET localhost:3030/v1beta/paws/version
 ```
 
 Response:
@@ -49,14 +51,16 @@ Response:
 
 ### Init
 
-POST `/init`
+This endpoint starts the PAWS `Initialization` request procedure. It allows you to send the PAWS `INIT_REQ` message. It returns a PAWS `INIT_RESP` message.
 
-Starts the PAWS `Initialization` request procedure. It allows you to send the PAWS `INIT_REQ` message. It returns a PAWS `INIT_RESP` message.
+| Method | Path                 |
+| :----- | :------------------- |
+| `POST` | `/paws/init`         |
 
-Example
+Sample Request
 
 ```
-curl --request POST localhost:3030/api/v1beta/paws/init \
+curl --request POST localhost:3030/v1beta/paws/init \
 --header 'Content-Type: application/json' \
 --data-raw '{
 "jsonrpc": "2.0",
@@ -79,7 +83,7 @@ curl --request POST localhost:3030/api/v1beta/paws/init \
 }'
 ```
 
-Response:
+Sample Response:
 
 ```
 {
