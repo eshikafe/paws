@@ -1,7 +1,7 @@
 # NCC TVWS Ruleset
 
 ## Ruleset Identifier
-NCC to provide the `rulesetIds` for TVWS deployment in Nigeria. For now, I have decided to name it `NccTVWS-2019` after the [2019 NCC draft guidelines](https://ncc.gov.ng/media-centre/public-notices/760-public-notice-draft-guidelines-on-the-use-of-television-white-space-tvws-in-nigeria) for TV white space deployment in Nigeria.
+NCC to provide the `rulesetIds` for TVWS deployment in Nigeria. For now, I have decided to name it `NccTVWS-2019` after the [2019 NCC TVWS draft guidelines](https://ncc.gov.ng/media-centre/public-notices/760-public-notice-draft-guidelines-on-the-use-of-television-white-space-tvws-in-nigeria).
 
 ## PAWS Initialization
 
