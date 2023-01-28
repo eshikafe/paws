@@ -98,7 +98,7 @@ pub struct RegistrationResp {
 impl RegistrationResp {
     pub fn new() -> Self {
         // Fix this later. rulesetinfos should be retrieved from the DB, not hardcoded
-        let ruleset_infos = String::from("NccTvBandWhiteSpace-2019");
+        let ruleset_infos = String::from("NccTVWS-2019");
         Self {
             mtype: RequestType::RegistrationResp.to_string(),
             version: PAWS_VERSION.to_string(),

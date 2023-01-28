@@ -110,14 +110,15 @@ pub struct DeviceDescriptor {
 
 impl DeviceDescriptor {
     pub fn new(regulator: &str) -> Self {
-        //let regulatory_domains = vec!["ncc", "fcc", "etsi", "paws", "ofcom"];
+        //TODO 
+        // Regulatory domains supported: ["ncc", "fcc", "etsi", "paws", "ofcom", "icasa"]
         let mut other_params = HashMap::new();
         let rule_set_id: String;
 
         match regulator {
             "ncc" => {
                 other_params.insert(String::from("NccId"), json!("YYY"));
-                rule_set_id = String::from("NccTvBandWhiteSpace-2019");
+                rule_set_id = String::from("NccTVWS-2019");
             }
             "fcc" => {
                 other_params.insert(String::from("FccId"), json!("YYY"));
@@ -214,11 +215,11 @@ pub struct RulesetInfo {
 impl RulesetInfo {
     pub fn new(ruleset_id: String) -> Self {
 
-       if ruleset_id == String::from("NccTvBandWhiteSpace-2019") {
+       if ruleset_id == String::from("NccTVWS-2019") {
            Self {
                 // TODO: Use rule_set_id in DeviceDescriptor to determine rulesetId and authority
                 authority: String::from("ng"),
-                rulesetId: String::from("NccTvBandWhiteSpace-2019"),
+                rulesetId: String::from("NccTVWS-2019"),
                 maxLocationChange: Some(100.0),
                 maxPollingSecs: Some(86400),
                 other: None,
@@ -227,7 +228,7 @@ impl RulesetInfo {
             Self {
                 // TODO: Use rule_set_id in DeviceDescriptor to determine rulesetId and authority
                 authority: String::from("ng"),
-                rulesetId: String::from("NccTvBandWhiteSpace-2019"),
+                rulesetId: String::from("NccTVWS-2019"),
                 maxLocationChange: Some(100.0),
                 maxPollingSecs: Some(86400),
                 other: None,
