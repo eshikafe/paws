@@ -1,4 +1,4 @@
-# PAWS Protocol
+# PAWS
 
 PAWS - Protocol to Access White Space database [RFC 7545](https://datatracker.ietf.org/doc/rfc7545/)
 
